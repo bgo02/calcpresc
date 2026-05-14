@@ -1,0 +1,835 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Calculadora de Prescrição Previdenciária</title>
+  <meta name="description" content="Calculadora simples de prescrição quinquenal com suspensão por pedido administrativo de revisão." />
+  <style>
+    :root {
+      --bg: #f7f3ee;
+      --card: #ffffff;
+      --text: #222222;
+      --muted: #666666;
+      --border: #d8d0c7;
+      --primary: #3f4a54;
+      --primary-hover: #2f3840;
+      --danger: #9f2d2d;
+      --success: #2f6f4e;
+      --warning: #8a5a00;
+      --soft: #f0ebe5;
+      --radius: 14px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    header, footer {
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+    }
+
+    footer { border-top: 1px solid var(--border); border-bottom: 0; }
+
+    .wrap {
+      width: min(920px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    header .wrap { padding: 32px 0; }
+    main.wrap { padding: 32px 0 48px; }
+    footer .wrap { padding: 20px 0; color: var(--muted); font-size: 13px; }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(24px, 4vw, 34px);
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+    }
+
+    .subtitle {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: 0 8px 28px rgba(0,0,0,.04);
+      margin-bottom: 24px;
+    }
+
+    h2 {
+      margin: 0 0 18px;
+      font-size: 20px;
+      letter-spacing: -0.01em;
+    }
+
+    h3 {
+      margin: 20px 0 10px;
+      font-size: 15px;
+    }
+
+    label {
+      display: block;
+      font-weight: 650;
+      font-size: 14px;
+      margin-bottom: 6px;
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 12px;
+      margin: 0 0 8px;
+    }
+
+    .field { margin-bottom: 18px; }
+
+    .der-row {
+      display: grid;
+      grid-template-columns: 64px 1fr auto;
+      gap: 8px;
+      align-items: start;
+      margin-bottom: 10px;
+    }
+
+    .der-label {
+      padding-top: 9px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      height: 40px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: #fff;
+      color: var(--text);
+      padding: 8px 11px;
+      font: inherit;
+      outline: none;
+    }
+
+    input[type="text"]:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(63,74,84,.13);
+    }
+
+    input.invalid {
+      border-color: var(--danger);
+      box-shadow: 0 0 0 3px rgba(159,45,45,.10);
+    }
+
+    .error {
+      color: var(--danger);
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    .der-error { grid-column: 2 / 4; margin-top: -4px; }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+
+    button {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      height: 40px;
+      padding: 0 14px;
+      background: #fff;
+      color: var(--text);
+      font: inherit;
+      font-weight: 650;
+      cursor: pointer;
+    }
+
+    button.primary {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    button.primary:hover:not(:disabled) { background: var(--primary-hover); }
+
+    button:disabled {
+      opacity: .45;
+      cursor: not-allowed;
+    }
+
+    button.icon {
+      width: 40px;
+      padding: 0;
+      color: var(--danger);
+    }
+
+    .result-line {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+    }
+
+    .result-line strong {
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .result-line.highlight {
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .badge.success { background: #e6f3ec; color: var(--success); }
+    .badge.warning { background: #fff4dc; color: var(--warning); }
+    .badge.danger { background: #f9e4e4; color: var(--danger); }
+
+    .der-status {
+      border: 1px solid var(--border);
+      background: var(--soft);
+      border-radius: 12px;
+      padding: 12px;
+      margin: 10px 0;
+    }
+
+    .der-status .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 4px;
+    }
+
+    .der-status p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 460px;
+      resize: vertical;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      background: #fff;
+      color: var(--text);
+      font: 15px/1.6 Georgia, "Times New Roman", serif;
+      white-space: pre-wrap;
+    }
+
+    .hidden { display: none; }
+
+    @media (max-width: 620px) {
+      .card { padding: 18px; }
+      .der-row { grid-template-columns: 56px 1fr auto; }
+      .result-line { display: block; }
+      .result-line strong { display: block; text-align: left; margin-top: 3px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <h1>Calculadora de Prescrição Previdenciária</h1>
+      <p class="subtitle">Pedido administrativo de revisão · Súmula nº 74 da TNU</p>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="card">
+      <h2>Marcos temporais</h2>
+
+      <div class="field">
+        <label>DER — Data(s) de Entrada do Requerimento</label>
+        <p class="hint">Informe de 1 a 5 DERs. Formato: dd/mm/aaaa.</p>
+        <div id="ders"></div>
+        <button type="button" id="addDer">Adicionar DER</button>
+      </div>
+
+      <div class="field">
+        <label for="dataPedido">Data do pedido administrativo de revisão</label>
+        <p class="hint">Início da suspensão do prazo prescricional.</p>
+        <input id="dataPedido" type="text" inputmode="numeric" maxlength="10" placeholder="dd/mm/aaaa" autocomplete="off" />
+        <div class="error" id="err-dataPedido"></div>
+      </div>
+
+      <div class="field">
+        <label for="dataDecisao">Data da comunicação da decisão administrativa final</label>
+        <p class="hint">Retomada da contagem do prazo.</p>
+        <input id="dataDecisao" type="text" inputmode="numeric" maxlength="10" placeholder="dd/mm/aaaa" autocomplete="off" />
+        <div class="error" id="err-dataDecisao"></div>
+      </div>
+
+      <div class="field">
+        <label for="dataAjuizamento">Data do ajuizamento da ação</label>
+        <input id="dataAjuizamento" type="text" inputmode="numeric" maxlength="10" placeholder="dd/mm/aaaa" autocomplete="off" />
+        <div class="error" id="err-dataAjuizamento"></div>
+      </div>
+
+      <div class="actions">
+        <button type="button" class="primary" id="calcular" disabled>Calcular</button>
+        <button type="button" id="limpar">Limpar</button>
+      </div>
+    </section>
+
+    <section class="card hidden" id="resultadoCard">
+      <h2>Resultado do cálculo</h2>
+      <div id="resultado"></div>
+      <h3>Análise por DER</h3>
+      <div id="derStatuses"></div>
+      <div id="conclusaoBadge" style="margin-top: 12px;"></div>
+    </section>
+
+    <section class="card hidden" id="minutaCard">
+      <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:14px;">
+        <h2 style="margin:0;">Minuta de fundamentação</h2>
+        <button type="button" id="copiar">Copiar minuta</button>
+      </div>
+      <textarea id="minuta" readonly></textarea>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      Aplicação client-side. Nenhum dado é transmitido a servidor externo ou armazenado localmente.
+    </div>
+  </footer>
+
+  <script>
+    const QUINQUENIO_DIAS = 1826;
+
+    const state = {
+      ders: [""],
+      dataPedido: "",
+      dataDecisao: "",
+      dataAjuizamento: "",
+      resultado: null,
+      parsedDates: null,
+    };
+
+    const $ = (id) => document.getElementById(id);
+
+    function maskDateBR(raw) {
+      const digits = String(raw || "").replace(/\D/g, "").slice(0, 8);
+      if (digits.length <= 2) return digits;
+      if (digits.length <= 4) return `${digits.slice(0, 2)}/${digits.slice(2)}`;
+      return `${digits.slice(0, 2)}/${digits.slice(2, 4)}/${digits.slice(4)}`;
+    }
+
+    function digitCount(value) {
+      return String(value || "").replace(/\D/g, "").length;
+    }
+
+    function parseDataBR(value) {
+      if (!value) return null;
+      const normalized = String(value).trim();
+      if (!/^\d{2}\/\d{2}\/\d{4}$/.test(normalized) && !/^\d{8}$/.test(normalized)) return null;
+
+      const digits = normalized.replace(/\D/g, "");
+      if (digits.length !== 8) return null;
+
+      const dia = Number(digits.slice(0, 2));
+      const mes = Number(digits.slice(2, 4));
+      const ano = Number(digits.slice(4, 8));
+
+      if (!dia || !mes || !ano) return null;
+      if (mes < 1 || mes > 12) return null;
+      if (dia < 1 || dia > 31) return null;
+      if (ano < 1900 || ano > 2999) return null;
+
+      const d = new Date(ano, mes - 1, dia);
+      if (d.getFullYear() !== ano || d.getMonth() !== mes - 1 || d.getDate() !== dia) return null;
+
+      const endOfToday = new Date();
+      endOfToday.setHours(23, 59, 59, 999);
+      if (d > endOfToday) return null;
+
+      d.setHours(12, 0, 0, 0);
+      return d;
+    }
+
+    function fmt(date) {
+      const d = String(date.getDate()).padStart(2, "0");
+      const m = String(date.getMonth() + 1).padStart(2, "0");
+      const y = date.getFullYear();
+      return `${d}/${m}/${y}`;
+    }
+
+    function daysInMonth(year, monthIndex) {
+      return new Date(year, monthIndex + 1, 0).getDate();
+    }
+
+    function makeDate(year, monthIndex, day) {
+      const d = new Date(year, monthIndex, day);
+      d.setHours(12, 0, 0, 0);
+      return d;
+    }
+
+    function addYears(date, amount) {
+      const year = date.getFullYear() + amount;
+      const month = date.getMonth();
+      const day = Math.min(date.getDate(), daysInMonth(year, month));
+      return makeDate(year, month, day);
+    }
+
+    function addMonths(date, amount) {
+      const totalMonths = date.getFullYear() * 12 + date.getMonth() + amount;
+      const year = Math.floor(totalMonths / 12);
+      const month = ((totalMonths % 12) + 12) % 12;
+      const day = Math.min(date.getDate(), daysInMonth(year, month));
+      return makeDate(year, month, day);
+    }
+
+    function addDays(date, amount) {
+      const d = makeDate(date.getFullYear(), date.getMonth(), date.getDate());
+      d.setDate(d.getDate() + amount);
+      return d;
+    }
+
+    function dayNumber(date) {
+      return Math.floor(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) / 86400000);
+    }
+
+    function differenceInCalendarDays(dateLeft, dateRight) {
+      return dayNumber(dateLeft) - dayNumber(dateRight);
+    }
+
+    function calcularIntervalo(dataInicial, dataFinal) {
+      if (dataFinal < dataInicial) return { anos: 0, meses: 0, dias: 0, totalDias: 0 };
+
+      const totalDias = differenceInCalendarDays(dataFinal, dataInicial);
+      let anos = 0;
+      let cursor = new Date(dataInicial);
+
+      while (true) {
+        const next = addYears(cursor, 1);
+        if (next <= dataFinal) {
+          cursor = next;
+          anos++;
+        } else {
+          break;
+        }
+      }
+
+      let meses = 0;
+      while (true) {
+        const next = addMonths(cursor, 1);
+        if (next <= dataFinal) {
+          cursor = next;
+          meses++;
+        } else {
+          break;
+        }
+      }
+
+      const dias = differenceInCalendarDays(dataFinal, cursor);
+      return { anos, meses, dias, totalDias };
+    }
+
+    function formatarIntervalo(intervalo) {
+      const parts = [];
+      if (intervalo.anos > 0) parts.push(`${intervalo.anos} ${intervalo.anos === 1 ? "ano" : "anos"}`);
+      if (intervalo.meses > 0) parts.push(`${intervalo.meses} ${intervalo.meses === 1 ? "mês" : "meses"}`);
+      if (intervalo.dias > 0) parts.push(`${intervalo.dias} ${intervalo.dias === 1 ? "dia" : "dias"}`);
+      if (parts.length === 0) return "0 dias";
+      if (parts.length === 1) return parts[0];
+      return parts.slice(0, -1).join(", ") + " e " + parts[parts.length - 1];
+    }
+
+    function subtrairDeCincoAnos(consumido) {
+      let y = 5, m = 0, d = 0;
+      const dy = consumido.anos, dm = consumido.meses, dd = consumido.dias;
+
+      if (d < dd) {
+        m -= 1;
+        d += 30;
+      }
+      d -= dd;
+
+      if (m < dm) {
+        y -= 1;
+        m += 12;
+      }
+      m -= dm;
+      y -= dy;
+
+      while (d < 0) {
+        m -= 1;
+        d += 30;
+      }
+      while (m < 0) {
+        y -= 1;
+        m += 12;
+      }
+
+      return { anos: y, meses: m, dias: d, totalDias: 0 };
+    }
+
+    function calcularPrescricao(input) {
+      const { ders, dataPedido, dataDecisao, dataAjuizamento } = input;
+
+      const saldoConsumido = calcularIntervalo(dataDecisao, dataAjuizamento);
+      const excedeQuinquenio = saldoConsumido.totalDias > QUINQUENIO_DIAS;
+
+      const saldoRemanescente = excedeQuinquenio
+        ? { anos: 0, meses: 0, dias: 0, totalDias: 0 }
+        : subtrairDeCincoAnos(saldoConsumido);
+
+      let marcoPrescricional;
+      if (excedeQuinquenio) {
+        marcoPrescricional = new Date(dataPedido);
+      } else {
+        let m = new Date(dataPedido);
+        m = addYears(m, -saldoRemanescente.anos);
+        m = addMonths(m, -saldoRemanescente.meses);
+        m = addDays(m, -saldoRemanescente.dias);
+        marcoPrescricional = m;
+      }
+
+      const marcoSimples = addYears(dataAjuizamento, -5);
+      const diferencaFavorSegurado = differenceInCalendarDays(marcoSimples, marcoPrescricional);
+
+      const ordenadas = [...ders].sort((a, b) => a.getTime() - b.getTime());
+      const derStatuses = ordenadas.map((der) => {
+        const haPrescricao = der < marcoPrescricional;
+        return {
+          der,
+          haPrescricao,
+          diaAnteriorMarco: haPrescricao ? addDays(marcoPrescricional, -1) : null,
+        };
+      });
+
+      return {
+        saldoConsumido,
+        saldoRemanescente,
+        marcoPrescricional,
+        marcoSimples,
+        diferencaFavorSegurado,
+        excedeQuinquenio,
+        derStatuses,
+      };
+    }
+
+    function haAlgumaPrescricao(resultado) {
+      return resultado.derStatuses.some((s) => s.haPrescricao);
+    }
+
+    function validar() {
+      const errors = {
+        ders: state.ders.map(() => ""),
+        dataPedido: "",
+        dataDecisao: "",
+        dataAjuizamento: "",
+      };
+
+      const dp = parseDataBR(state.dataPedido);
+      const dd = parseDataBR(state.dataDecisao);
+      const da = parseDataBR(state.dataAjuizamento);
+      const derDates = state.ders.map(parseDataBR);
+
+      derDates.forEach((d, i) => {
+        const raw = state.ders[i];
+        if (!raw) errors.ders[i] = "Informe a data.";
+        else if (digitCount(raw) < 8) errors.ders[i] = "Data incompleta.";
+        else if (!d) errors.ders[i] = "Data inválida ou futura.";
+        else if (dp && d > dp) errors.ders[i] = "DER não pode ser posterior ao pedido administrativo de revisão.";
+      });
+
+      const seen = new Map();
+      derDates.forEach((d, i) => {
+        if (!d) return;
+        const k = d.getTime();
+        if (seen.has(k)) {
+          errors.ders[i] = "DER duplicada.";
+          errors.ders[seen.get(k)] = "DER duplicada.";
+        } else {
+          seen.set(k, i);
+        }
+      });
+
+      function check(raw, parsed) {
+        if (!raw) return "";
+        if (digitCount(raw) < 8) return "Data incompleta.";
+        if (!parsed) return "Data inválida ou futura.";
+        return "";
+      }
+
+      errors.dataPedido = check(state.dataPedido, dp);
+      errors.dataDecisao = check(state.dataDecisao, dd);
+      errors.dataAjuizamento = check(state.dataAjuizamento, da);
+
+      if (dp && dd && dd < dp) errors.dataDecisao = "Deve ser posterior ou igual ao pedido administrativo.";
+      if (dd && da && da <= dd) errors.dataAjuizamento = "Deve ser posterior à decisão administrativa.";
+
+      const valid =
+        digitCount(state.dataPedido) === 8 &&
+        digitCount(state.dataDecisao) === 8 &&
+        digitCount(state.dataAjuizamento) === 8 &&
+        state.ders.every((d) => digitCount(d) === 8) &&
+        !errors.ders.some(Boolean) &&
+        !errors.dataPedido &&
+        !errors.dataDecisao &&
+        !errors.dataAjuizamento;
+
+      return { errors, valid, parsed: { dp, dd, da, derDates } };
+    }
+
+    function renderDers(errors = []) {
+      const container = $("ders");
+      container.innerHTML = "";
+
+      state.ders.forEach((value, index) => {
+        const row = document.createElement("div");
+        row.className = "der-row";
+
+        const label = document.createElement("div");
+        label.className = "der-label";
+        label.textContent = `DER ${index + 1}`;
+
+        const input = document.createElement("input");
+        input.type = "text";
+        input.inputMode = "numeric";
+        input.maxLength = 10;
+        input.placeholder = "dd/mm/aaaa";
+        input.autocomplete = "off";
+        input.value = value;
+        input.className = errors[index] ? "invalid" : "";
+        input.addEventListener("input", () => {
+          state.ders[index] = maskDateBR(input.value);
+          render();
+        });
+
+        const remove = document.createElement("button");
+        remove.type = "button";
+        remove.className = "icon";
+        remove.textContent = "×";
+        remove.title = "Remover DER";
+        remove.disabled = state.ders.length <= 1;
+        remove.addEventListener("click", () => {
+          if (state.ders.length <= 1) return;
+          state.ders.splice(index, 1);
+          clearResult();
+          render();
+        });
+
+        row.append(label, input, remove);
+
+        if (errors[index]) {
+          const err = document.createElement("div");
+          err.className = "error der-error";
+          err.textContent = errors[index];
+          row.appendChild(err);
+        }
+
+        container.appendChild(row);
+      });
+
+      $("addDer").disabled = state.ders.length >= 5;
+    }
+
+    function setField(id, value) {
+      state[id] = maskDateBR(value);
+      clearResult();
+      render();
+    }
+
+    function renderField(id, error) {
+      const input = $(id);
+      input.value = state[id];
+      input.className = error ? "invalid" : "";
+      $(`err-${id}`).textContent = error || "";
+    }
+
+    function clearResult() {
+      state.resultado = null;
+      state.parsedDates = null;
+    }
+
+    function render() {
+      const validation = validar();
+
+      renderDers(validation.errors.ders);
+      renderField("dataPedido", validation.errors.dataPedido);
+      renderField("dataDecisao", validation.errors.dataDecisao);
+      renderField("dataAjuizamento", validation.errors.dataAjuizamento);
+
+      $("calcular").disabled = !validation.valid;
+
+      if (state.resultado && state.parsedDates) {
+        renderResultado();
+      } else {
+        $("resultadoCard").classList.add("hidden");
+        $("minutaCard").classList.add("hidden");
+      }
+    }
+
+    function renderResultado() {
+      const r = state.resultado;
+      $("resultadoCard").classList.remove("hidden");
+      $("minutaCard").classList.remove("hidden");
+
+      $("resultado").innerHTML = `
+        <div class="result-line"><span>Saldo consumido após a decisão administrativa (DA − DD)</span><strong>${formatarIntervalo(r.saldoConsumido)}</strong></div>
+        <div class="result-line"><span>Saldo remanescente do quinquênio</span><strong>${formatarIntervalo(r.saldoRemanescente)}</strong></div>
+        <div class="result-line highlight"><span>Marco prescricional (com suspensão)</span><strong>${fmt(r.marcoPrescricional)}</strong></div>
+        <div class="result-line"><span>Marco simples (DA − 5 anos), para conferência</span><strong>${fmt(r.marcoSimples)}</strong></div>
+        <p class="hint">Diferença a favor do segurado: <strong>${r.diferencaFavorSegurado} ${r.diferencaFavorSegurado === 1 ? "dia" : "dias"}</strong>.</p>
+      `;
+
+      $("derStatuses").innerHTML = r.derStatuses.map((s) => `
+        <div class="der-status">
+          <div class="top">
+            <strong>DER ${fmt(s.der)}</strong>
+            <span class="badge ${s.haPrescricao ? "warning" : "success"}">${s.haPrescricao ? "Prescrição parcial" : "Sem prescrição"}</span>
+          </div>
+          <p>${s.haPrescricao
+            ? `Prescritas as parcelas entre ${fmt(s.der)} e ${fmt(s.diaAnteriorMarco)}; preservadas a partir de ${fmt(r.marcoPrescricional)}.`
+            : `Sem prescrição; preservadas todas as parcelas desde ${fmt(s.der)}.`
+          }</p>
+        </div>
+      `).join("");
+
+      $("conclusaoBadge").innerHTML = haAlgumaPrescricao(r)
+        ? `<span class="badge danger">Há prescrição em ao menos uma DER</span>`
+        : `<span class="badge success">Nenhuma DER atingida pela prescrição</span>`;
+
+      $("minuta").value = gerarMinuta({
+        ...state.parsedDates,
+        resultado: r,
+      });
+    }
+
+    function gerarMinuta({ ders, dataPedido, dataDecisao, dataAjuizamento, resultado }) {
+      const ordenadas = [...ders].sort((a, b) => a.getTime() - b.getTime());
+      const linhasDER = ordenadas.map((d, i) => `DER ${i + 1}: ${fmt(d)}.`).join("\n\n");
+      const algumaPrescricao = haAlgumaPrescricao(resultado);
+
+      const conclusao = algumaPrescricao
+        ? gerarConclusaoComPrescricao(resultado)
+        : `Como nenhuma das datas de entrada de requerimento informadas é anterior ao marco prescricional acima identificado, não há parcelas atingidas pela prescrição quinquenal.`;
+
+      return `Prejudicial de mérito: prescrição.
+
+As pretensões de natureza previdenciária deduzidas em face do INSS submetem-se ao prazo prescricional quinquenal previsto no art. 1º do Decreto nº 20.910/32, estendido às autarquias pelo art. 2º do Decreto-Lei nº 4.597/42 e reafirmado, no âmbito da legislação de regência, pelo parágrafo único do art. 103 da Lei nº 8.213/91. Cuidando-se de relação jurídica de trato sucessivo, e não havendo negativa do próprio fundo de direito, a prescrição alcança apenas as parcelas vencidas no quinquênio anterior à propositura da ação.
+
+O pedido administrativo de revisão do benefício, por sua vez, constitui causa suspensiva — e não interruptiva — da prescrição, nos termos do art. 4º do Decreto nº 20.910/32, segundo o qual não corre o prazo prescricional enquanto a Administração estiver examinando o requerimento do interessado. Trata-se de orientação consagrada na Súmula nº 74 da Turma Nacional de Uniformização dos Juizados Especiais Federais ("O prazo de prescrição fica suspenso pela formulação de requerimento administrativo e volta a correr pelo saldo remanescente após a ciência da decisão administrativa final") e reiteradamente afirmada pelo Superior Tribunal de Justiça e pelo Tribunal Regional Federal da 4ª Região.
+
+No caso, os marcos pertinentes para a análise da prescrição são os seguintes:
+
+${linhasDER}
+
+Pedido administrativo de revisão (início da suspensão): ${fmt(dataPedido)}.
+
+Decisão administrativa final (retomada da contagem): ${fmt(dataDecisao)}.
+
+Ajuizamento da ação: ${fmt(dataAjuizamento)}.
+
+Aplicação da fórmula da Súmula nº 74 da TNU ao caso concreto:
+
+(i) Saldo do prazo prescricional consumido após a retomada da contagem, correspondente ao lapso decorrido entre a comunicação da decisão administrativa (${fmt(dataDecisao)}) e o ajuizamento da ação (${fmt(dataAjuizamento)}): ${formatarIntervalo(resultado.saldoConsumido)}.
+
+(ii) Saldo remanescente do quinquênio, contado regressivamente a partir do pedido administrativo de revisão (${fmt(dataPedido)}): ${formatarIntervalo(resultado.saldoRemanescente)}.
+
+(iii) Marco prescricional, correspondente à data obtida pela retroprojeção do saldo remanescente a partir do pedido administrativo de revisão: ${fmt(resultado.marcoPrescricional)}. Parcelas com vencimento anterior a essa data estão prescritas; parcelas com vencimento posterior, não.
+
+${conclusao}`;
+    }
+
+    function gerarConclusaoComPrescricao(r) {
+      const linhas = r.derStatuses.map((s) => {
+        if (s.haPrescricao) {
+          return `Em relação à DER de ${fmt(s.der)}: estão prescritas as parcelas vencidas entre ${fmt(s.der)} e ${fmt(s.diaAnteriorMarco)}. As parcelas vencidas a partir de ${fmt(r.marcoPrescricional)} estão preservadas.`;
+        }
+        return `Em relação à DER de ${fmt(s.der)}: não há parcelas prescritas. Todas as parcelas vencidas desde ${fmt(s.der)} estão preservadas.`;
+      });
+
+      return `Considerando o marco prescricional acima identificado, e as datas de entrada de requerimento informadas, tem-se o seguinte:
+
+${linhas.map((l) => `• ${l}`).join("\n\n")}
+
+Em síntese, estão prescritas as parcelas vencidas em data anterior a ${fmt(r.marcoPrescricional)}, devendo as parcelas posteriores a essa data ser preservadas.`;
+    }
+
+    $("dataPedido").addEventListener("input", (event) => setField("dataPedido", event.target.value));
+    $("dataDecisao").addEventListener("input", (event) => setField("dataDecisao", event.target.value));
+    $("dataAjuizamento").addEventListener("input", (event) => setField("dataAjuizamento", event.target.value));
+
+    $("addDer").addEventListener("click", () => {
+      if (state.ders.length >= 5) return;
+      state.ders.push("");
+      clearResult();
+      render();
+    });
+
+    $("limpar").addEventListener("click", () => {
+      state.ders = [""];
+      state.dataPedido = "";
+      state.dataDecisao = "";
+      state.dataAjuizamento = "";
+      clearResult();
+      render();
+    });
+
+    $("calcular").addEventListener("click", () => {
+      const validation = validar();
+      if (!validation.valid) {
+        render();
+        return;
+      }
+
+      const ders = state.ders.map(parseDataBR);
+      const dataPedido = parseDataBR(state.dataPedido);
+      const dataDecisao = parseDataBR(state.dataDecisao);
+      const dataAjuizamento = parseDataBR(state.dataAjuizamento);
+
+      const resultado = calcularPrescricao({ ders, dataPedido, dataDecisao, dataAjuizamento });
+      state.resultado = resultado;
+      state.parsedDates = { ders, dataPedido, dataDecisao, dataAjuizamento };
+      renderResultado();
+    });
+
+    $("copiar").addEventListener("click", async () => {
+      const text = $("minuta").value;
+      try {
+        await navigator.clipboard.writeText(text);
+        $("copiar").textContent = "Copiado";
+        setTimeout(() => $("copiar").textContent = "Copiar minuta", 1200);
+      } catch {
+        $("minuta").focus();
+        $("minuta").select();
+        document.execCommand("copy");
+      }
+    });
+
+    render();
+  </script>
+</body>
+</html>
