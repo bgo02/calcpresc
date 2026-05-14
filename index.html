@@ -4,7 +4,6 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Calculadora de Prescrição Previdenciária</title>
-  <meta name="description" content="Calculadora simples de prescrição quinquenal com suspensão por pedido administrativo de revisão." />
   <style>
     :root {
       --bg: #f7f3ee;
@@ -13,39 +12,53 @@
       --muted: #666666;
       --border: #d8d0c7;
       --primary: #3f4a54;
-      --primary-hover: #2f3840;
       --danger: #9f2d2d;
       --success: #2f6f4e;
       --warning: #8a5a00;
       --soft: #f0ebe5;
-      --radius: 14px;
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       margin: 0;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background: var(--bg);
       color: var(--text);
       line-height: 1.5;
     }
 
-    header, footer {
+    header,
+    footer {
       background: var(--card);
       border-bottom: 1px solid var(--border);
     }
 
-    footer { border-top: 1px solid var(--border); border-bottom: 0; }
+    footer {
+      border-top: 1px solid var(--border);
+      border-bottom: 0;
+    }
 
     .wrap {
       width: min(920px, calc(100% - 32px));
       margin: 0 auto;
     }
 
-    header .wrap { padding: 32px 0; }
-    main.wrap { padding: 32px 0 48px; }
-    footer .wrap { padding: 20px 0; color: var(--muted); font-size: 13px; }
+    header .wrap {
+      padding: 32px 0;
+    }
+
+    main.wrap {
+      padding: 32px 0 48px;
+    }
+
+    footer .wrap {
+      padding: 20px 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
 
     h1 {
       margin: 0;
@@ -63,16 +76,15 @@
     .card {
       background: var(--card);
       border: 1px solid var(--border);
-      border-radius: var(--radius);
+      border-radius: 14px;
       padding: 24px;
-      box-shadow: 0 8px 28px rgba(0,0,0,.04);
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.04);
       margin-bottom: 24px;
     }
 
     h2 {
       margin: 0 0 18px;
       font-size: 20px;
-      letter-spacing: -0.01em;
     }
 
     h3 {
@@ -93,7 +105,9 @@
       margin: 0 0 8px;
     }
 
-    .field { margin-bottom: 18px; }
+    .field {
+      margin-bottom: 18px;
+    }
 
     .der-row {
       display: grid;
@@ -123,22 +137,25 @@
 
     input[type="text"]:focus {
       border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(63,74,84,.13);
+      box-shadow: 0 0 0 3px rgba(63, 74, 84, 0.13);
     }
 
     input.invalid {
       border-color: var(--danger);
-      box-shadow: 0 0 0 3px rgba(159,45,45,.10);
+      box-shadow: 0 0 0 3px rgba(159, 45, 45, 0.1);
     }
 
     .error {
       color: var(--danger);
       font-size: 12px;
-      margin-top: 4px;
       min-height: 18px;
+      margin-top: 4px;
     }
 
-    .der-error { grid-column: 2 / 4; margin-top: -4px; }
+    .der-error {
+      grid-column: 2 / 4;
+      margin-top: -4px;
+    }
 
     .actions {
       display: flex;
@@ -161,21 +178,19 @@
 
     button.primary {
       background: var(--primary);
-      color: white;
+      color: #fff;
       border-color: var(--primary);
-    }
-
-    button.primary:hover:not(:disabled) { background: var(--primary-hover); }
-
-    button:disabled {
-      opacity: .45;
-      cursor: not-allowed;
     }
 
     button.icon {
       width: 40px;
       padding: 0;
       color: var(--danger);
+    }
+
+    button:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
     }
 
     .result-line {
@@ -206,9 +221,20 @@
       font-weight: 700;
     }
 
-    .badge.success { background: #e6f3ec; color: var(--success); }
-    .badge.warning { background: #fff4dc; color: var(--warning); }
-    .badge.danger { background: #f9e4e4; color: var(--danger); }
+    .badge.success {
+      background: #e6f3ec;
+      color: var(--success);
+    }
+
+    .badge.warning {
+      background: #fff4dc;
+      color: var(--warning);
+    }
+
+    .badge.danger {
+      background: #f9e4e4;
+      color: var(--danger);
+    }
 
     .der-status {
       border: 1px solid var(--border);
@@ -246,16 +272,32 @@
       white-space: pre-wrap;
     }
 
-    .hidden { display: none; }
+    .hidden {
+      display: none;
+    }
 
     @media (max-width: 620px) {
-      .card { padding: 18px; }
-      .der-row { grid-template-columns: 56px 1fr auto; }
-      .result-line { display: block; }
-      .result-line strong { display: block; text-align: left; margin-top: 3px; }
+      .card {
+        padding: 18px;
+      }
+
+      .der-row {
+        grid-template-columns: 56px 1fr auto;
+      }
+
+      .result-line {
+        display: block;
+      }
+
+      .result-line strong {
+        display: block;
+        text-align: left;
+        margin-top: 3px;
+      }
     }
   </style>
 </head>
+
 <body>
   <header>
     <div class="wrap">
@@ -296,7 +338,7 @@
       </div>
 
       <div class="actions">
-        <button type="button" class="primary" id="calcular" disabled>Calcular</button>
+        <button type="button" class="primary" id="calcular">Calcular</button>
         <button type="button" id="limpar">Limpar</button>
       </div>
     </section>
@@ -334,22 +376,17 @@
       dataAjuizamento: "",
       resultado: null,
       parsedDates: null,
-      touched: {
-        ders: [false],
-        dataPedido: false,
-        dataDecisao: false,
-        dataAjuizamento: false,
-      },
-      submitted: false,
     };
 
     const $ = (id) => document.getElementById(id);
 
     function maskDateBR(raw) {
       const digits = String(raw || "").replace(/\D/g, "").slice(0, 8);
+
       if (digits.length <= 2) return digits;
-      if (digits.length <= 4) return `${digits.slice(0, 2)}/${digits.slice(2)}`;
-      return `${digits.slice(0, 2)}/${digits.slice(2, 4)}/${digits.slice(4)}`;
+      if (digits.length <= 4) return digits.slice(0, 2) + "/" + digits.slice(2);
+
+      return digits.slice(0, 2) + "/" + digits.slice(2, 4) + "/" + digits.slice(4);
     }
 
     function digitCount(value) {
@@ -358,8 +395,12 @@
 
     function parseDataBR(value) {
       if (!value) return null;
+
       const normalized = String(value).trim();
-      if (!/^\d{2}\/\d{2}\/\d{4}$/.test(normalized) && !/^\d{8}$/.test(normalized)) return null;
+
+      if (!/^\d{2}\/\d{2}\/\d{4}$/.test(normalized) && !/^\d{8}$/.test(normalized)) {
+        return null;
+      }
 
       const digits = normalized.replace(/\D/g, "");
       if (digits.length !== 8) return null;
@@ -374,13 +415,22 @@
       if (ano < 1900 || ano > 2999) return null;
 
       const d = new Date(ano, mes - 1, dia);
-      if (d.getFullYear() !== ano || d.getMonth() !== mes - 1 || d.getDate() !== dia) return null;
+
+      if (
+        d.getFullYear() !== ano ||
+        d.getMonth() !== mes - 1 ||
+        d.getDate() !== dia
+      ) {
+        return null;
+      }
 
       const endOfToday = new Date();
       endOfToday.setHours(23, 59, 59, 999);
+
       if (d > endOfToday) return null;
 
       d.setHours(12, 0, 0, 0);
+
       return d;
     }
 
@@ -388,7 +438,7 @@
       const d = String(date.getDate()).padStart(2, "0");
       const m = String(date.getMonth() + 1).padStart(2, "0");
       const y = date.getFullYear();
-      return `${d}/${m}/${y}`;
+      return d + "/" + m + "/" + y;
     }
 
     function daysInMonth(year, monthIndex) {
@@ -431,9 +481,12 @@
     }
 
     function calcularIntervalo(dataInicial, dataFinal) {
-      if (dataFinal < dataInicial) return { anos: 0, meses: 0, dias: 0, totalDias: 0 };
+      if (dataFinal < dataInicial) {
+        return { anos: 0, meses: 0, dias: 0, totalDias: 0 };
+      }
 
       const totalDias = differenceInCalendarDays(dataFinal, dataInicial);
+
       let anos = 0;
       let cursor = new Date(dataInicial);
 
@@ -448,6 +501,7 @@
       }
 
       let meses = 0;
+
       while (true) {
         const next = addMonths(cursor, 1);
         if (next <= dataFinal) {
@@ -459,33 +513,52 @@
       }
 
       const dias = differenceInCalendarDays(dataFinal, cursor);
+
       return { anos, meses, dias, totalDias };
     }
 
     function formatarIntervalo(intervalo) {
       const parts = [];
-      if (intervalo.anos > 0) parts.push(`${intervalo.anos} ${intervalo.anos === 1 ? "ano" : "anos"}`);
-      if (intervalo.meses > 0) parts.push(`${intervalo.meses} ${intervalo.meses === 1 ? "mês" : "meses"}`);
-      if (intervalo.dias > 0) parts.push(`${intervalo.dias} ${intervalo.dias === 1 ? "dia" : "dias"}`);
+
+      if (intervalo.anos > 0) {
+        parts.push(intervalo.anos + " " + (intervalo.anos === 1 ? "ano" : "anos"));
+      }
+
+      if (intervalo.meses > 0) {
+        parts.push(intervalo.meses + " " + (intervalo.meses === 1 ? "mês" : "meses"));
+      }
+
+      if (intervalo.dias > 0) {
+        parts.push(intervalo.dias + " " + (intervalo.dias === 1 ? "dia" : "dias"));
+      }
+
       if (parts.length === 0) return "0 dias";
       if (parts.length === 1) return parts[0];
+
       return parts.slice(0, -1).join(", ") + " e " + parts[parts.length - 1];
     }
 
     function subtrairDeCincoAnos(consumido) {
-      let y = 5, m = 0, d = 0;
-      const dy = consumido.anos, dm = consumido.meses, dd = consumido.dias;
+      let y = 5;
+      let m = 0;
+      let d = 0;
+
+      const dy = consumido.anos;
+      const dm = consumido.meses;
+      const dd = consumido.dias;
 
       if (d < dd) {
         m -= 1;
         d += 30;
       }
+
       d -= dd;
 
       if (m < dm) {
         y -= 1;
         m += 12;
       }
+
       m -= dm;
       y -= dy;
 
@@ -493,6 +566,7 @@
         m -= 1;
         d += 30;
       }
+
       while (m < 0) {
         y -= 1;
         m += 12;
@@ -502,7 +576,10 @@
     }
 
     function calcularPrescricao(input) {
-      const { ders, dataPedido, dataDecisao, dataAjuizamento } = input;
+      const ders = input.ders;
+      const dataPedido = input.dataPedido;
+      const dataDecisao = input.dataDecisao;
+      const dataAjuizamento = input.dataAjuizamento;
 
       const saldoConsumido = calcularIntervalo(dataDecisao, dataAjuizamento);
       const excedeQuinquenio = saldoConsumido.totalDias > QUINQUENIO_DIAS;
@@ -512,6 +589,7 @@
         : subtrairDeCincoAnos(saldoConsumido);
 
       let marcoPrescricional;
+
       if (excedeQuinquenio) {
         marcoPrescricional = new Date(dataPedido);
       } else {
@@ -523,11 +601,17 @@
       }
 
       const marcoSimples = addYears(dataAjuizamento, -5);
-      const diferencaFavorSegurado = differenceInCalendarDays(marcoSimples, marcoPrescricional);
 
-      const ordenadas = [...ders].sort((a, b) => a.getTime() - b.getTime());
+      const diferencaFavorSegurado = differenceInCalendarDays(
+        marcoSimples,
+        marcoPrescricional
+      );
+
+      const ordenadas = ders.slice().sort((a, b) => a.getTime() - b.getTime());
+
       const derStatuses = ordenadas.map((der) => {
         const haPrescricao = der < marcoPrescricional;
+
         return {
           der,
           haPrescricao,
@@ -550,72 +634,29 @@
       return resultado.derStatuses.some((s) => s.haPrescricao);
     }
 
-    function validar() {
-      const errors = {
-        ders: state.ders.map(() => ""),
-        dataPedido: "",
-        dataDecisao: "",
-        dataAjuizamento: "",
-      };
-
-      const dp = parseDataBR(state.dataPedido);
-      const dd = parseDataBR(state.dataDecisao);
-      const da = parseDataBR(state.dataAjuizamento);
-      const derDates = state.ders.map(parseDataBR);
-
-      derDates.forEach((d, i) => {
-        const raw = state.ders[i];
-        if (!raw) errors.ders[i] = "Informe a data.";
-        else if (digitCount(raw) < 8) errors.ders[i] = "Data incompleta.";
-        else if (!d) errors.ders[i] = "Data inválida ou futura.";
-        else if (dp && d > dp) errors.ders[i] = "DER não pode ser posterior ao pedido administrativo de revisão.";
+    function clearErrors() {
+      document.querySelectorAll("input").forEach((input) => {
+        input.classList.remove("invalid");
       });
 
-      const seen = new Map();
-      derDates.forEach((d, i) => {
-        if (!d) return;
-        const k = d.getTime();
-        if (seen.has(k)) {
-          errors.ders[i] = "DER duplicada.";
-          errors.ders[seen.get(k)] = "DER duplicada.";
-        } else {
-          seen.set(k, i);
-        }
+      document.querySelectorAll(".error").forEach((el) => {
+        el.textContent = "";
       });
-
-      function check(raw, parsed) {
-        if (!raw) return "Informe a data.";
-        if (digitCount(raw) < 8) return "Data incompleta.";
-        if (!parsed) return "Data inválida ou futura.";
-        return "";
-      }
-
-      errors.dataPedido = check(state.dataPedido, dp);
-      errors.dataDecisao = check(state.dataDecisao, dd);
-      errors.dataAjuizamento = check(state.dataAjuizamento, da);
-
-      if (dp && dd && dd < dp) errors.dataDecisao = "Deve ser posterior ou igual ao pedido administrativo.";
-      if (dd && da && da <= dd) errors.dataAjuizamento = "Deve ser posterior à decisão administrativa.";
-
-      const valid =
-        digitCount(state.dataPedido) === 8 &&
-        digitCount(state.dataDecisao) === 8 &&
-        digitCount(state.dataAjuizamento) === 8 &&
-        state.ders.every((d) => digitCount(d) === 8) &&
-        !errors.ders.some(Boolean) &&
-        !errors.dataPedido &&
-        !errors.dataDecisao &&
-        !errors.dataAjuizamento;
-
-      return { errors, valid, parsed: { dp, dd, da, derDates } };
     }
 
-    function shouldShowDerError(index) {
-      return state.submitted || state.touched.ders[index] || digitCount(state.ders[index]) === 8;
+    function clearResult() {
+      state.resultado = null;
+      state.parsedDates = null;
+      $("resultadoCard").classList.add("hidden");
+      $("minutaCard").classList.add("hidden");
     }
 
-    function shouldShowFieldError(id) {
-      return state.submitted || state.touched[id] || digitCount(state[id]) === 8;
+    function setFieldValue(id, value) {
+      state[id] = maskDateBR(value);
+      $(id).value = state[id];
+      $(id).classList.remove("invalid");
+      $("err-" + id).textContent = "";
+      clearResult();
     }
 
     function renderDers() {
@@ -625,11 +666,10 @@
       state.ders.forEach((value, index) => {
         const row = document.createElement("div");
         row.className = "der-row";
-        row.dataset.index = String(index);
 
         const label = document.createElement("div");
         label.className = "der-label";
-        label.textContent = `DER ${index + 1}`;
+        label.textContent = "DER " + (index + 1);
 
         const input = document.createElement("input");
         input.type = "text";
@@ -640,113 +680,238 @@
         input.value = value;
         input.dataset.derIndex = String(index);
 
+        input.addEventListener("input", function () {
+          const i = Number(input.dataset.derIndex);
+          state.ders[i] = maskDateBR(input.value);
+          input.value = state.ders[i];
+
+          input.classList.remove("invalid");
+
+          const err = document.getElementById("err-der-" + i);
+          if (err) err.textContent = "";
+
+          clearResult();
+        });
+
         const remove = document.createElement("button");
         remove.type = "button";
         remove.className = "icon";
         remove.textContent = "×";
         remove.title = "Remover DER";
         remove.disabled = state.ders.length <= 1;
-        remove.addEventListener("click", () => {
+
+        remove.addEventListener("click", function () {
           if (state.ders.length <= 1) return;
+
           state.ders.splice(index, 1);
-          state.touched.ders.splice(index, 1);
           clearResult();
-          renderAll();
+          renderDers();
         });
 
         const error = document.createElement("div");
         error.className = "error der-error";
-        error.id = `err-der-${index}`;
+        error.id = "err-der-" + index;
 
-        row.append(label, input, remove, error);
+        row.appendChild(label);
+        row.appendChild(input);
+        row.appendChild(remove);
+        row.appendChild(error);
+
         container.appendChild(row);
       });
 
       $("addDer").disabled = state.ders.length >= 5;
-      updateValidationDisplay();
     }
 
-    function updateValidationDisplay() {
-      const validation = validar();
-      $("calcular").disabled = !validation.valid;
+    function validarFormulario() {
+      clearErrors();
 
-      state.ders.forEach((_, index) => {
-        const input = document.querySelector(`[data-der-index="${index}"]`);
-        const err = $(`err-der-${index}`);
-        const message = shouldShowDerError(index) ? validation.errors.ders[index] : "";
-        if (input) input.classList.toggle("invalid", Boolean(message));
-        if (err) err.textContent = message || "";
+      let valid = true;
+
+      const dp = parseDataBR(state.dataPedido);
+      const dd = parseDataBR(state.dataDecisao);
+      const da = parseDataBR(state.dataAjuizamento);
+      const derDates = state.ders.map(parseDataBR);
+
+      state.ders.forEach((raw, index) => {
+        let message = "";
+
+        if (!raw) {
+          message = "Informe a data.";
+        } else if (digitCount(raw) < 8) {
+          message = "Data incompleta.";
+        } else if (!derDates[index]) {
+          message = "Data inválida ou futura.";
+        } else if (dp && derDates[index] > dp) {
+          message = "DER não pode ser posterior ao pedido administrativo de revisão.";
+        }
+
+        if (message) {
+          valid = false;
+          const input = document.querySelector('[data-der-index="' + index + '"]');
+          const err = $("err-der-" + index);
+
+          if (input) input.classList.add("invalid");
+          if (err) err.textContent = message;
+        }
       });
 
-      ["dataPedido", "dataDecisao", "dataAjuizamento"].forEach((id) => {
-        const message = shouldShowFieldError(id) ? validation.errors[id] : "";
-        $(id).classList.toggle("invalid", Boolean(message));
-        $(`err-${id}`).textContent = message || "";
+      const seen = new Map();
+
+      derDates.forEach((date, index) => {
+        if (!date) return;
+
+        const key = date.getTime();
+
+        if (seen.has(key)) {
+          valid = false;
+
+          const firstIndex = seen.get(key);
+          const input1 = document.querySelector('[data-der-index="' + firstIndex + '"]');
+          const input2 = document.querySelector('[data-der-index="' + index + '"]');
+
+          if (input1) input1.classList.add("invalid");
+          if (input2) input2.classList.add("invalid");
+
+          $("err-der-" + firstIndex).textContent = "DER duplicada.";
+          $("err-der-" + index).textContent = "DER duplicada.";
+        } else {
+          seen.set(key, index);
+        }
       });
 
-      return validation;
-    }
+      function checkField(id, parsed) {
+        const raw = state[id];
+        let message = "";
 
-    function clearResult() {
-      state.resultado = null;
-      state.parsedDates = null;
-      $("resultadoCard").classList.add("hidden");
-      $("minutaCard").classList.add("hidden");
-    }
+        if (!raw) {
+          message = "Informe a data.";
+        } else if (digitCount(raw) < 8) {
+          message = "Data incompleta.";
+        } else if (!parsed) {
+          message = "Data inválida ou futura.";
+        }
 
-    function renderAll() {
-      $("dataPedido").value = state.dataPedido;
-      $("dataDecisao").value = state.dataDecisao;
-      $("dataAjuizamento").value = state.dataAjuizamento;
-      renderDers();
-      updateValidationDisplay();
-      if (state.resultado && state.parsedDates) renderResultado();
+        if (message) {
+          valid = false;
+          $(id).classList.add("invalid");
+          $("err-" + id).textContent = message;
+        }
+      }
+
+      checkField("dataPedido", dp);
+      checkField("dataDecisao", dd);
+      checkField("dataAjuizamento", da);
+
+      if (dp && dd && dd < dp) {
+        valid = false;
+        $("dataDecisao").classList.add("invalid");
+        $("err-dataDecisao").textContent =
+          "Deve ser posterior ou igual ao pedido administrativo.";
+      }
+
+      if (dd && da && da <= dd) {
+        valid = false;
+        $("dataAjuizamento").classList.add("invalid");
+        $("err-dataAjuizamento").textContent =
+          "Deve ser posterior à decisão administrativa.";
+      }
+
+      return {
+        valid,
+        parsed: {
+          ders: derDates,
+          dataPedido: dp,
+          dataDecisao: dd,
+          dataAjuizamento: da,
+        },
+      };
     }
 
     function renderResultado() {
       const r = state.resultado;
+
       $("resultadoCard").classList.remove("hidden");
       $("minutaCard").classList.remove("hidden");
 
-      $("resultado").innerHTML = `
-        <div class="result-line"><span>Saldo consumido após a decisão administrativa (DA − DD)</span><strong>${formatarIntervalo(r.saldoConsumido)}</strong></div>
-        <div class="result-line"><span>Saldo remanescente do quinquênio</span><strong>${formatarIntervalo(r.saldoRemanescente)}</strong></div>
-        <div class="result-line highlight"><span>Marco prescricional (com suspensão)</span><strong>${fmt(r.marcoPrescricional)}</strong></div>
-        <div class="result-line"><span>Marco simples (DA − 5 anos), para conferência</span><strong>${fmt(r.marcoSimples)}</strong></div>
-        <p class="hint">Diferença a favor do segurado: <strong>${r.diferencaFavorSegurado} ${r.diferencaFavorSegurado === 1 ? "dia" : "dias"}</strong>.</p>
-      `;
+      $("resultado").innerHTML =
+        '<div class="result-line"><span>Saldo consumido após a decisão administrativa (DA − DD)</span><strong>' +
+        formatarIntervalo(r.saldoConsumido) +
+        '</strong></div>' +
+        '<div class="result-line"><span>Saldo remanescente do quinquênio</span><strong>' +
+        formatarIntervalo(r.saldoRemanescente) +
+        '</strong></div>' +
+        '<div class="result-line highlight"><span>Marco prescricional (com suspensão)</span><strong>' +
+        fmt(r.marcoPrescricional) +
+        '</strong></div>' +
+        '<div class="result-line"><span>Marco simples (DA − 5 anos), para conferência</span><strong>' +
+        fmt(r.marcoSimples) +
+        '</strong></div>' +
+        '<p class="hint">Diferença a favor do segurado: <strong>' +
+        r.diferencaFavorSegurado +
+        " " +
+        (r.diferencaFavorSegurado === 1 ? "dia" : "dias") +
+        "</strong>.</p>";
 
-      $("derStatuses").innerHTML = r.derStatuses.map((s) => `
-        <div class="der-status">
-          <div class="top">
-            <strong>DER ${fmt(s.der)}</strong>
-            <span class="badge ${s.haPrescricao ? "warning" : "success"}">${s.haPrescricao ? "Prescrição parcial" : "Sem prescrição"}</span>
-          </div>
-          <p>${s.haPrescricao
-            ? `Prescritas as parcelas entre ${fmt(s.der)} e ${fmt(s.diaAnteriorMarco)}; preservadas a partir de ${fmt(r.marcoPrescricional)}.`
-            : `Sem prescrição; preservadas todas as parcelas desde ${fmt(s.der)}.`
-          }</p>
-        </div>
-      `).join("");
+      $("derStatuses").innerHTML = r.derStatuses
+        .map((s) => {
+          return (
+            '<div class="der-status">' +
+            '<div class="top">' +
+            "<strong>DER " +
+            fmt(s.der) +
+            "</strong>" +
+            '<span class="badge ' +
+            (s.haPrescricao ? "warning" : "success") +
+            '">' +
+            (s.haPrescricao ? "Prescrição parcial" : "Sem prescrição") +
+            "</span>" +
+            "</div>" +
+            "<p>" +
+            (s.haPrescricao
+              ? "Prescritas as parcelas entre " +
+                fmt(s.der) +
+                " e " +
+                fmt(s.diaAnteriorMarco) +
+                "; preservadas a partir de " +
+                fmt(r.marcoPrescricional) +
+                "."
+              : "Sem prescrição; preservadas todas as parcelas desde " +
+                fmt(s.der) +
+                ".") +
+            "</p>" +
+            "</div>"
+          );
+        })
+        .join("");
 
       $("conclusaoBadge").innerHTML = haAlgumaPrescricao(r)
-        ? `<span class="badge danger">Há prescrição em ao menos uma DER</span>`
-        : `<span class="badge success">Nenhuma DER atingida pela prescrição</span>`;
+        ? '<span class="badge danger">Há prescrição em ao menos uma DER</span>'
+        : '<span class="badge success">Nenhuma DER atingida pela prescrição</span>';
 
       $("minuta").value = gerarMinuta({
-        ...state.parsedDates,
+        ders: state.parsedDates.ders,
+        dataPedido: state.parsedDates.dataPedido,
+        dataDecisao: state.parsedDates.dataDecisao,
+        dataAjuizamento: state.parsedDates.dataAjuizamento,
         resultado: r,
       });
     }
 
-    function gerarMinuta({ ders, dataPedido, dataDecisao, dataAjuizamento, resultado }) {
-      const ordenadas = [...ders].sort((a, b) => a.getTime() - b.getTime());
-      const linhasDER = ordenadas.map((d, i) => `DER ${i + 1}: ${fmt(d)}.`).join("\n\n");
-      const algumaPrescricao = haAlgumaPrescricao(resultado);
+    function gerarMinuta(input) {
+      const ders = input.ders.slice().sort((a, b) => a.getTime() - b.getTime());
+      const dataPedido = input.dataPedido;
+      const dataDecisao = input.dataDecisao;
+      const dataAjuizamento = input.dataAjuizamento;
+      const resultado = input.resultado;
 
-      const conclusao = algumaPrescricao
+      const linhasDER = ders
+        .map((d, i) => "DER " + (i + 1) + ": " + fmt(d) + ".")
+        .join("\n\n");
+
+      const conclusao = haAlgumaPrescricao(resultado)
         ? gerarConclusaoComPrescricao(resultado)
-        : `Como nenhuma das datas de entrada de requerimento informadas é anterior ao marco prescricional acima identificado, não há parcelas atingidas pela prescrição quinquenal.`;
+        : "Como nenhuma das datas de entrada de requerimento informadas é anterior ao marco prescricional acima identificado, não há parcelas atingidas pela prescrição quinquenal.";
 
       return `Prejudicial de mérito: prescrição.
 
@@ -778,109 +943,100 @@ ${conclusao}`;
     function gerarConclusaoComPrescricao(r) {
       const linhas = r.derStatuses.map((s) => {
         if (s.haPrescricao) {
-          return `Em relação à DER de ${fmt(s.der)}: estão prescritas as parcelas vencidas entre ${fmt(s.der)} e ${fmt(s.diaAnteriorMarco)}. As parcelas vencidas a partir de ${fmt(r.marcoPrescricional)} estão preservadas.`;
+          return (
+            "Em relação à DER de " +
+            fmt(s.der) +
+            ": estão prescritas as parcelas vencidas entre " +
+            fmt(s.der) +
+            " e " +
+            fmt(s.diaAnteriorMarco) +
+            ". As parcelas vencidas a partir de " +
+            fmt(r.marcoPrescricional) +
+            " estão preservadas."
+          );
         }
-        return `Em relação à DER de ${fmt(s.der)}: não há parcelas prescritas. Todas as parcelas vencidas desde ${fmt(s.der)} estão preservadas.`;
+
+        return (
+          "Em relação à DER de " +
+          fmt(s.der) +
+          ": não há parcelas prescritas. Todas as parcelas vencidas desde " +
+          fmt(s.der) +
+          " estão preservadas."
+        );
       });
 
       return `Considerando o marco prescricional acima identificado, e as datas de entrada de requerimento informadas, tem-se o seguinte:
 
-${linhas.map((l) => `• ${l}`).join("\n\n")}
+${linhas.map((l) => "• " + l).join("\n\n")}
 
 Em síntese, estão prescritas as parcelas vencidas em data anterior a ${fmt(r.marcoPrescricional)}, devendo as parcelas posteriores a essa data ser preservadas.`;
     }
 
-    $("ders").addEventListener("input", (event) => {
-      const input = event.target;
-      const index = Number(input.dataset.derIndex);
-      if (!Number.isFinite(index)) return;
-
-      const masked = maskDateBR(input.value);
-      state.ders[index] = masked;
-      input.value = masked;
-      clearResult();
-
-      // Não renderiza/recria o input durante a digitação. Assim o cursor não sai do campo.
-      updateValidationDisplay();
+    $("dataPedido").addEventListener("input", function () {
+      setFieldValue("dataPedido", this.value);
     });
 
-    $("ders").addEventListener("blur", (event) => {
-      const input = event.target;
-      const index = Number(input.dataset.derIndex);
-      if (!Number.isFinite(index)) return;
-      state.touched.ders[index] = true;
-      updateValidationDisplay();
-    }, true);
+    $("dataDecisao").addEventListener("input", function () {
+      setFieldValue("dataDecisao", this.value);
+    });
 
-    function attachDateField(id) {
-      const input = $(id);
+    $("dataAjuizamento").addEventListener("input", function () {
+      setFieldValue("dataAjuizamento", this.value);
+    });
 
-      input.addEventListener("input", () => {
-        const masked = maskDateBR(input.value);
-        state[id] = masked;
-        input.value = masked;
-        clearResult();
-
-        // Não mostra "Data incompleta" enquanto o usuário digita.
-        updateValidationDisplay();
-      });
-
-      input.addEventListener("blur", () => {
-        state.touched[id] = true;
-        updateValidationDisplay();
-      });
-    }
-
-    attachDateField("dataPedido");
-    attachDateField("dataDecisao");
-    attachDateField("dataAjuizamento");
-
-    $("addDer").addEventListener("click", () => {
+    $("addDer").addEventListener("click", function () {
       if (state.ders.length >= 5) return;
+
       state.ders.push("");
-      state.touched.ders.push(false);
       clearResult();
-      renderAll();
+      renderDers();
     });
 
-    $("limpar").addEventListener("click", () => {
+    $("limpar").addEventListener("click", function () {
       state.ders = [""];
       state.dataPedido = "";
       state.dataDecisao = "";
       state.dataAjuizamento = "";
-      state.touched = {
-        ders: [false],
-        dataPedido: false,
-        dataDecisao: false,
-        dataAjuizamento: false,
-      };
-      state.submitted = false;
+
+      $("dataPedido").value = "";
+      $("dataDecisao").value = "";
+      $("dataAjuizamento").value = "";
+
+      clearErrors();
       clearResult();
-      renderAll();
+      renderDers();
     });
 
-    $("calcular").addEventListener("click", () => {
-      state.submitted = true;
-      const validation = updateValidationDisplay();
+    $("calcular").addEventListener("click", function () {
+      const validation = validarFormulario();
+
       if (!validation.valid) return;
 
-      const ders = state.ders.map(parseDataBR);
-      const dataPedido = parseDataBR(state.dataPedido);
-      const dataDecisao = parseDataBR(state.dataDecisao);
-      const dataAjuizamento = parseDataBR(state.dataAjuizamento);
+      const parsed = validation.parsed;
 
-      const resultado = calcularPrescricao({ ders, dataPedido, dataDecisao, dataAjuizamento });
+      const resultado = calcularPrescricao({
+        ders: parsed.ders,
+        dataPedido: parsed.dataPedido,
+        dataDecisao: parsed.dataDecisao,
+        dataAjuizamento: parsed.dataAjuizamento,
+      });
+
       state.resultado = resultado;
-      state.parsedDates = { ders, dataPedido, dataDecisao, dataAjuizamento };
+      state.parsedDates = parsed;
+
       renderResultado();
     });
 
-    $("copiar").addEventListener("click", async () => {
+    $("copiar").addEventListener("click", async function () {
       const text = $("minuta").value;
+
       try {
         await navigator.clipboard.writeText(text);
         $("copiar").textContent = "Copiado";
-        setTimeout(() => $("copiar").textContent = "Copiar minuta", 1200);
+
+        setTimeout(function () {
+          $("copiar").textContent = "Copiar minuta";
+        }, 1200);
       } catch {
         $("minuta").focus();
         $("minuta").select();
@@ -888,7 +1044,7 @@ Em síntese, estão prescritas as parcelas vencidas em data anterior a ${fmt(r.m
       }
     });
 
-    renderAll();
+    renderDers();
   </script>
 </body>
 </html>
