@@ -18,9 +18,7 @@
       --soft: #f0ebe5;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -30,8 +28,7 @@
       line-height: 1.5;
     }
 
-    header,
-    footer {
+    header, footer {
       background: var(--card);
       border-bottom: 1px solid var(--border);
     }
@@ -46,14 +43,8 @@
       margin: 0 auto;
     }
 
-    header .wrap {
-      padding: 32px 0;
-    }
-
-    main.wrap {
-      padding: 32px 0 48px;
-    }
-
+    header .wrap { padding: 32px 0; }
+    main.wrap { padding: 32px 0 48px; }
     footer .wrap {
       padding: 20px 0;
       color: var(--muted);
@@ -82,15 +73,8 @@
       margin-bottom: 24px;
     }
 
-    h2 {
-      margin: 0 0 18px;
-      font-size: 20px;
-    }
-
-    h3 {
-      margin: 20px 0 10px;
-      font-size: 15px;
-    }
+    h2 { margin: 0 0 18px; font-size: 20px; }
+    h3 { margin: 20px 0 10px; font-size: 15px; }
 
     label {
       display: block;
@@ -105,11 +89,8 @@
       margin: 0 0 8px;
     }
 
-    .field {
-      margin-bottom: 18px;
-    }
+    .field { margin-bottom: 18px; }
 
-    /* Requerimento card */
     .req-row {
       border: 1px solid var(--border);
       background: #fff;
@@ -142,10 +123,6 @@
       color: var(--muted);
       font-weight: 650;
       margin-bottom: 4px;
-    }
-
-    .req-error {
-      margin-top: 4px;
     }
 
     input[type="text"] {
@@ -241,20 +218,9 @@
       font-weight: 700;
     }
 
-    .badge.success {
-      background: #e6f3ec;
-      color: var(--success);
-    }
-
-    .badge.warning {
-      background: #fff4dc;
-      color: var(--warning);
-    }
-
-    .badge.danger {
-      background: #f9e4e4;
-      color: var(--danger);
-    }
+    .badge.success { background: #e6f3ec; color: var(--success); }
+    .badge.warning { background: #fff4dc; color: var(--warning); }
+    .badge.danger { background: #f9e4e4; color: var(--danger); }
 
     .der-status {
       border: 1px solid var(--border);
@@ -286,7 +252,7 @@
 
     textarea {
       width: 100%;
-      min-height: 460px;
+      min-height: 520px;
       resize: vertical;
       border: 1px solid var(--border);
       border-radius: 12px;
@@ -297,23 +263,12 @@
       white-space: pre-wrap;
     }
 
-    .hidden {
-      display: none;
-    }
+    .hidden { display: none; }
 
     @media (max-width: 620px) {
-      .card {
-        padding: 18px;
-      }
-
-      .req-fields {
-        grid-template-columns: 1fr;
-      }
-
-      .result-line {
-        display: block;
-      }
-
+      .card { padding: 18px; }
+      .req-fields { grid-template-columns: 1fr; }
+      .result-line { display: block; }
       .result-line strong {
         display: block;
         text-align: left;
@@ -327,7 +282,7 @@
   <header>
     <div class="wrap">
       <h1>Calculadora de Prescrição Previdenciária</h1>
-      <p class="subtitle">Pedido administrativo de revisão · Súmula nº 74 da TNU</p>
+      <p class="subtitle">DER, requerimento administrativo, revisão e Súmula nº 74 da TNU</p>
     </div>
   </header>
 
@@ -337,23 +292,16 @@
 
       <div class="field">
         <label>Requerimentos administrativos originários</label>
-        <p class="hint">Para cada requerimento, informe a DER e a data da decisão final (indeferimento ou concessão). Formato: dd/mm/aaaa. Máximo de 5 requerimentos.</p>
+        <p class="hint">Informe a DER e a data da decisão final de cada requerimento. A DER identifica o marco administrativo amplo; a prescrição relativa ao próprio requerimento nasce com a decisão final, quando a pretensão resistida se consolida. Formato: dd/mm/aaaa. Máximo de 5 requerimentos.</p>
         <div id="reqs"></div>
         <button type="button" id="addReq">Adicionar requerimento</button>
       </div>
 
       <div class="field">
-        <label for="dataPedido">Data do pedido administrativo de revisão</label>
-        <p class="hint">Início da suspensão do prazo prescricional.</p>
-        <input id="dataPedido" type="text" inputmode="numeric" maxlength="10" placeholder="dd/mm/aaaa" autocomplete="off" />
-        <div class="error" id="err-dataPedido"></div>
-      </div>
-
-      <div class="field">
-        <label for="dataDecisao">Data da comunicação da decisão administrativa final do pedido de revisão</label>
-        <p class="hint">Retomada da contagem do prazo.</p>
-        <input id="dataDecisao" type="text" inputmode="numeric" maxlength="10" placeholder="dd/mm/aaaa" autocomplete="off" />
-        <div class="error" id="err-dataDecisao"></div>
+        <label>Pedidos administrativos de revisão</label>
+        <p class="hint">Para cada pedido de revisão, informe o protocolo e a data da comunicação da decisão administrativa final. A revisão suspende a prescrição já iniciada. É possível registrar até 2 pedidos de revisão sobre a mesma matéria de fato.</p>
+        <div id="revisoes"></div>
+        <button type="button" id="addRevisao">Adicionar segundo pedido de revisão</button>
       </div>
 
       <div class="field">
@@ -392,12 +340,9 @@
   </footer>
 
   <script>
-    const QUINQUENIO_DIAS = 1826;
-
     const state = {
       requerimentos: [{ der: "", decisao: "" }],
-      dataPedido: "",
-      dataDecisao: "",
+      revisoes: [{ pedido: "", decisao: "" }],
       dataAjuizamento: "",
       resultado: null,
       parsedDates: null,
@@ -407,10 +352,8 @@
 
     function maskDateBR(raw) {
       const digits = String(raw || "").replace(/\D/g, "").slice(0, 8);
-
       if (digits.length <= 2) return digits;
       if (digits.length <= 4) return digits.slice(0, 2) + "/" + digits.slice(2);
-
       return digits.slice(0, 2) + "/" + digits.slice(2, 4) + "/" + digits.slice(4);
     }
 
@@ -420,42 +363,27 @@
 
     function parseDataBR(value) {
       if (!value) return null;
-
       const normalized = String(value).trim();
-
-      if (!/^\d{2}\/\d{2}\/\d{4}$/.test(normalized) && !/^\d{8}$/.test(normalized)) {
-        return null;
-      }
-
+      if (!/^\d{2}\/\d{2}\/\d{4}$/.test(normalized) && !/^\d{8}$/.test(normalized)) return null;
       const digits = normalized.replace(/\D/g, "");
       if (digits.length !== 8) return null;
 
       const dia = Number(digits.slice(0, 2));
       const mes = Number(digits.slice(2, 4));
       const ano = Number(digits.slice(4, 8));
-
       if (!dia || !mes || !ano) return null;
       if (mes < 1 || mes > 12) return null;
       if (dia < 1 || dia > 31) return null;
       if (ano < 1900 || ano > 2999) return null;
 
       const d = new Date(ano, mes - 1, dia);
-
-      if (
-        d.getFullYear() !== ano ||
-        d.getMonth() !== mes - 1 ||
-        d.getDate() !== dia
-      ) {
-        return null;
-      }
+      if (d.getFullYear() !== ano || d.getMonth() !== mes - 1 || d.getDate() !== dia) return null;
 
       const endOfToday = new Date();
       endOfToday.setHours(23, 59, 59, 999);
-
       if (d > endOfToday) return null;
 
       d.setHours(12, 0, 0, 0);
-
       return d;
     }
 
@@ -506,13 +434,10 @@
     }
 
     function calcularIntervalo(dataInicial, dataFinal) {
-      if (dataFinal < dataInicial) {
-        return { anos: 0, meses: 0, dias: 0, totalDias: 0 };
-      }
-
+      if (dataFinal < dataInicial) return { anos: 0, meses: 0, dias: 0, totalDias: 0 };
       const totalDias = differenceInCalendarDays(dataFinal, dataInicial);
-
       let anos = 0;
+      let meses = 0;
       let cursor = new Date(dataInicial);
 
       while (true) {
@@ -525,8 +450,6 @@
         }
       }
 
-      let meses = 0;
-
       while (true) {
         const next = addMonths(cursor, 1);
         if (next <= dataFinal) {
@@ -538,122 +461,126 @@
       }
 
       const dias = differenceInCalendarDays(dataFinal, cursor);
-
       return { anos, meses, dias, totalDias };
     }
 
     function formatarIntervalo(intervalo) {
       const parts = [];
-
-      if (intervalo.anos > 0) {
-        parts.push(intervalo.anos + " " + (intervalo.anos === 1 ? "ano" : "anos"));
-      }
-
-      if (intervalo.meses > 0) {
-        parts.push(intervalo.meses + " " + (intervalo.meses === 1 ? "mês" : "meses"));
-      }
-
-      if (intervalo.dias > 0) {
-        parts.push(intervalo.dias + " " + (intervalo.dias === 1 ? "dia" : "dias"));
-      }
-
+      if (intervalo.anos > 0) parts.push(intervalo.anos + " " + (intervalo.anos === 1 ? "ano" : "anos"));
+      if (intervalo.meses > 0) parts.push(intervalo.meses + " " + (intervalo.meses === 1 ? "mês" : "meses"));
+      if (intervalo.dias > 0) parts.push(intervalo.dias + " " + (intervalo.dias === 1 ? "dia" : "dias"));
       if (parts.length === 0) return "0 dias";
       if (parts.length === 1) return parts[0];
-
       return parts.slice(0, -1).join(", ") + " e " + parts[parts.length - 1];
     }
 
-    function subtrairDeCincoAnos(consumido) {
-      let y = 5;
-      let m = 0;
-      let d = 0;
+    function mergeIntervalos(intervalos) {
+      const arr = intervalos
+        .map((iv) => ({ inicio: iv.inicio, fim: iv.fim }))
+        .filter((iv) => dayNumber(iv.fim) > dayNumber(iv.inicio))
+        .sort((a, b) => dayNumber(a.inicio) - dayNumber(b.inicio));
 
-      const dy = consumido.anos;
-      const dm = consumido.meses;
-      const dd = consumido.dias;
+      if (arr.length === 0) return [];
+      const merged = [{ inicio: arr[0].inicio, fim: arr[0].fim }];
 
-      if (d < dd) {
-        m -= 1;
-        d += 30;
+      for (let i = 1; i < arr.length; i++) {
+        const last = merged[merged.length - 1];
+        if (dayNumber(arr[i].inicio) <= dayNumber(last.fim)) {
+          if (dayNumber(arr[i].fim) > dayNumber(last.fim)) last.fim = arr[i].fim;
+        } else {
+          merged.push({ inicio: arr[i].inicio, fim: arr[i].fim });
+        }
       }
 
-      d -= dd;
+      return merged;
+    }
 
-      if (m < dm) {
-        y -= 1;
-        m += 12;
+    function calcularMarco(dataAjuizamento, revisoes) {
+      let marco = addYears(dataAjuizamento, -5);
+      const intervalosEfetivos = [];
+
+      const intervalos = mergeIntervalos(
+        revisoes.map((r) => ({ inicio: r.pedido, fim: r.decisao }))
+      );
+
+      const ordenados = intervalos
+        .slice()
+        .sort((a, b) => dayNumber(b.fim) - dayNumber(a.fim));
+
+      for (const iv of ordenados) {
+        if (dayNumber(iv.fim) >= dayNumber(marco)) {
+          const dias = differenceInCalendarDays(iv.fim, iv.inicio);
+          marco = addDays(marco, -dias);
+          intervalosEfetivos.push({
+            inicio: iv.inicio,
+            fim: iv.fim,
+            intervalo: calcularIntervalo(iv.inicio, iv.fim),
+          });
+        } else {
+          break;
+        }
       }
 
-      m -= dm;
-      y -= dy;
-
-      while (d < 0) {
-        m -= 1;
-        d += 30;
-      }
-
-      while (m < 0) {
-        y -= 1;
-        m += 12;
-      }
-
-      return { anos: y, meses: m, dias: d, totalDias: 0 };
+      intervalosEfetivos.sort((a, b) => dayNumber(a.inicio) - dayNumber(b.inicio));
+      return { marco, intervalosEfetivos };
     }
 
     function calcularPrescricao(input) {
       const requerimentos = input.requerimentos;
-      const dataPedido = input.dataPedido;
-      const dataDecisao = input.dataDecisao;
+      const revisoes = input.revisoes;
       const dataAjuizamento = input.dataAjuizamento;
 
-      const saldoConsumido = calcularIntervalo(dataDecisao, dataAjuizamento);
-      const excedeQuinquenio = saldoConsumido.totalDias > QUINQUENIO_DIAS;
-
-      const saldoRemanescente = excedeQuinquenio
-        ? { anos: 0, meses: 0, dias: 0, totalDias: 0 }
-        : subtrairDeCincoAnos(saldoConsumido);
-
-      let marcoPrescricional;
-
-      if (excedeQuinquenio) {
-        marcoPrescricional = new Date(dataPedido);
-      } else {
-        let m = new Date(dataPedido);
-        m = addYears(m, -saldoRemanescente.anos);
-        m = addMonths(m, -saldoRemanescente.meses);
-        m = addDays(m, -saldoRemanescente.dias);
-        marcoPrescricional = m;
-      }
-
       const marcoSimples = addYears(dataAjuizamento, -5);
+      const calculoMarco = calcularMarco(dataAjuizamento, revisoes);
+      const marcoPrescricional = calculoMarco.marco;
+      const suspensaoTotalDias = differenceInCalendarDays(marcoSimples, marcoPrescricional);
 
-      const diferencaFavorSegurado = differenceInCalendarDays(
-        marcoSimples,
-        marcoPrescricional
-      );
-
-      const ordenados = requerimentos
+      const marcosNascimento = requerimentos
         .slice()
-        .sort((a, b) => a.der.getTime() - b.der.getTime());
+        .sort((a, b) => a.der.getTime() - b.der.getTime())
+        .map((r, i) => ({
+          label: "Requerimento " + (i + 1) + " (DER " + fmt(r.der) + "; decisão final " + fmt(r.decisao) + ")",
+          der: r.der,
+          decisao: r.decisao,
+          intervalo: calcularIntervalo(r.der, r.decisao),
+        }));
 
-      const requerimentoStatuses = ordenados.map((req) => {
-        const haPrescricao = req.der < marcoPrescricional;
+      const periodosComputados = calculoMarco.intervalosEfetivos.map((iv, i) => ({
+        label: "Pedido de revisão efetivamente computado " + (i + 1) + " (" + fmt(iv.inicio) + " a " + fmt(iv.fim) + ")",
+        inicio: iv.inicio,
+        fim: iv.fim,
+        intervalo: iv.intervalo,
+      }));
 
-        return {
-          der: req.der,
-          decisaoRequerimento: req.decisao,
-          haPrescricao,
-          diaAnteriorMarco: haPrescricao ? addDays(marcoPrescricional, -1) : null,
-        };
-      });
+      const periodosRevisaoInformados = revisoes.map((r, i) => ({
+        label: "Pedido de revisão " + (i + 1) + " (protocolo " + fmt(r.pedido) + " a " + fmt(r.decisao) + ")",
+        intervalo: calcularIntervalo(r.pedido, r.decisao),
+      }));
+
+      const requerimentoStatuses = requerimentos
+        .slice()
+        .sort((a, b) => a.der.getTime() - b.der.getTime())
+        .map((req) => {
+          const haPrescricao =
+            dayNumber(req.der) < dayNumber(marcoPrescricional) &&
+            dayNumber(req.decisao) < dayNumber(marcoPrescricional);
+
+          return {
+            der: req.der,
+            decisaoRequerimento: req.decisao,
+            haPrescricao,
+            diaAnteriorMarco: haPrescricao ? addDays(marcoPrescricional, -1) : null,
+          };
+        });
 
       return {
-        saldoConsumido,
-        saldoRemanescente,
-        marcoPrescricional,
         marcoSimples,
-        diferencaFavorSegurado,
-        excedeQuinquenio,
+        marcoPrescricional,
+        suspensaoTotalDias,
+        diferencaFavorSegurado: suspensaoTotalDias,
+        marcosNascimento,
+        periodosComputados,
+        periodosRevisaoInformados,
         requerimentoStatuses,
       };
     }
@@ -663,13 +590,8 @@
     }
 
     function clearErrors() {
-      document.querySelectorAll("input").forEach((input) => {
-        input.classList.remove("invalid");
-      });
-
-      document.querySelectorAll(".error").forEach((el) => {
-        el.textContent = "";
-      });
+      document.querySelectorAll("input").forEach((input) => input.classList.remove("invalid"));
+      document.querySelectorAll(".error").forEach((el) => { el.textContent = ""; });
     }
 
     function clearResult() {
@@ -690,15 +612,24 @@
     function makeReqField(label, inputEl, errorEl) {
       const field = document.createElement("div");
       field.className = "req-field";
-
       const lbl = document.createElement("label");
       lbl.textContent = label;
-
       field.appendChild(lbl);
       field.appendChild(inputEl);
       field.appendChild(errorEl);
-
       return field;
+    }
+
+    function makeDateInput(value, onInput) {
+      const input = document.createElement("input");
+      input.type = "text";
+      input.inputMode = "numeric";
+      input.maxLength = 10;
+      input.placeholder = "dd/mm/aaaa";
+      input.autocomplete = "off";
+      input.value = value;
+      input.addEventListener("input", onInput);
+      return input;
     }
 
     function renderRequerimentos() {
@@ -722,7 +653,6 @@
         remove.textContent = "×";
         remove.title = "Remover requerimento";
         remove.disabled = state.requerimentos.length <= 1;
-
         remove.addEventListener("click", function () {
           if (state.requerimentos.length <= 1) return;
           state.requerimentos.splice(index, 1);
@@ -736,57 +666,36 @@
         const fields = document.createElement("div");
         fields.className = "req-fields";
 
-        // DER input
-        const derInput = document.createElement("input");
-        derInput.type = "text";
-        derInput.inputMode = "numeric";
-        derInput.maxLength = 10;
-        derInput.placeholder = "dd/mm/aaaa";
-        derInput.autocomplete = "off";
-        derInput.value = req.der;
-        derInput.dataset.reqIndex = String(index);
-        derInput.dataset.reqField = "der";
-
         const derError = document.createElement("div");
-        derError.className = "error req-error";
+        derError.className = "error";
         derError.id = "err-req-" + index + "-der";
 
-        derInput.addEventListener("input", function () {
-          const i = Number(derInput.dataset.reqIndex);
-          state.requerimentos[i].der = maskDateBR(derInput.value);
-          derInput.value = state.requerimentos[i].der;
+        const derInput = makeDateInput(req.der, function () {
+          state.requerimentos[index].der = maskDateBR(derInput.value);
+          derInput.value = state.requerimentos[index].der;
           derInput.classList.remove("invalid");
           derError.textContent = "";
           clearResult();
         });
-
-        // Decisão input
-        const decisaoInput = document.createElement("input");
-        decisaoInput.type = "text";
-        decisaoInput.inputMode = "numeric";
-        decisaoInput.maxLength = 10;
-        decisaoInput.placeholder = "dd/mm/aaaa";
-        decisaoInput.autocomplete = "off";
-        decisaoInput.value = req.decisao;
-        decisaoInput.dataset.reqIndex = String(index);
-        decisaoInput.dataset.reqField = "decisao";
+        derInput.dataset.reqIndex = String(index);
+        derInput.dataset.reqField = "der";
 
         const decisaoError = document.createElement("div");
-        decisaoError.className = "error req-error";
+        decisaoError.className = "error";
         decisaoError.id = "err-req-" + index + "-decisao";
 
-        decisaoInput.addEventListener("input", function () {
-          const i = Number(decisaoInput.dataset.reqIndex);
-          state.requerimentos[i].decisao = maskDateBR(decisaoInput.value);
-          decisaoInput.value = state.requerimentos[i].decisao;
+        const decisaoInput = makeDateInput(req.decisao, function () {
+          state.requerimentos[index].decisao = maskDateBR(decisaoInput.value);
+          decisaoInput.value = state.requerimentos[index].decisao;
           decisaoInput.classList.remove("invalid");
           decisaoError.textContent = "";
           clearResult();
         });
+        decisaoInput.dataset.reqIndex = String(index);
+        decisaoInput.dataset.reqField = "decisao";
 
         fields.appendChild(makeReqField("DER", derInput, derError));
         fields.appendChild(makeReqField("Decisão final do requerimento", decisaoInput, decisaoError));
-
         row.appendChild(header);
         row.appendChild(fields);
         container.appendChild(row);
@@ -795,129 +704,198 @@
       $("addReq").disabled = state.requerimentos.length >= 5;
     }
 
+    function renderRevisoes() {
+      const container = $("revisoes");
+      container.innerHTML = "";
+
+      state.revisoes.forEach((rev, index) => {
+        const row = document.createElement("div");
+        row.className = "req-row";
+
+        const header = document.createElement("div");
+        header.className = "req-row-header";
+
+        const title = document.createElement("div");
+        title.className = "req-row-title";
+        title.textContent = "Pedido de revisão " + (index + 1);
+
+        const remove = document.createElement("button");
+        remove.type = "button";
+        remove.className = "icon";
+        remove.textContent = "×";
+        remove.title = "Remover pedido de revisão";
+        remove.disabled = state.revisoes.length <= 1;
+        remove.addEventListener("click", function () {
+          if (state.revisoes.length <= 1) return;
+          state.revisoes.splice(index, 1);
+          clearResult();
+          renderRevisoes();
+        });
+
+        header.appendChild(title);
+        header.appendChild(remove);
+
+        const fields = document.createElement("div");
+        fields.className = "req-fields";
+
+        const pedidoError = document.createElement("div");
+        pedidoError.className = "error";
+        pedidoError.id = "err-rev-" + index + "-pedido";
+
+        const pedidoInput = makeDateInput(rev.pedido, function () {
+          state.revisoes[index].pedido = maskDateBR(pedidoInput.value);
+          pedidoInput.value = state.revisoes[index].pedido;
+          pedidoInput.classList.remove("invalid");
+          pedidoError.textContent = "";
+          clearResult();
+        });
+        pedidoInput.dataset.revIndex = String(index);
+        pedidoInput.dataset.revField = "pedido";
+
+        const decisaoError = document.createElement("div");
+        decisaoError.className = "error";
+        decisaoError.id = "err-rev-" + index + "-decisao";
+
+        const decisaoInput = makeDateInput(rev.decisao, function () {
+          state.revisoes[index].decisao = maskDateBR(decisaoInput.value);
+          decisaoInput.value = state.revisoes[index].decisao;
+          decisaoInput.classList.remove("invalid");
+          decisaoError.textContent = "";
+          clearResult();
+        });
+        decisaoInput.dataset.revIndex = String(index);
+        decisaoInput.dataset.revField = "decisao";
+
+        fields.appendChild(makeReqField("Protocolo do pedido de revisão", pedidoInput, pedidoError));
+        fields.appendChild(makeReqField("Comunicação da decisão final", decisaoInput, decisaoError));
+        row.appendChild(header);
+        row.appendChild(fields);
+        container.appendChild(row);
+      });
+
+      $("addRevisao").disabled = state.revisoes.length >= 2;
+    }
+
+    function markReqError(index, field, message) {
+      const inp = document.querySelector('[data-req-index="' + index + '"][data-req-field="' + field + '"]');
+      if (inp) inp.classList.add("invalid");
+      const err = $("err-req-" + index + "-" + field);
+      if (err) err.textContent = message;
+    }
+
+    function markRevError(index, field, message) {
+      const inp = document.querySelector('[data-rev-index="' + index + '"][data-rev-field="' + field + '"]');
+      if (inp) inp.classList.add("invalid");
+      const err = $("err-rev-" + index + "-" + field);
+      if (err) err.textContent = message;
+    }
+
     function validarFormulario() {
       clearErrors();
-
       let valid = true;
 
-      const dp = parseDataBR(state.dataPedido);
-      const dd = parseDataBR(state.dataDecisao);
       const da = parseDataBR(state.dataAjuizamento);
-
       const parsedReqs = state.requerimentos.map((req) => ({
         der: parseDataBR(req.der),
         decisao: parseDataBR(req.decisao),
       }));
+      const parsedRevs = state.revisoes.map((rev) => ({
+        pedido: parseDataBR(rev.pedido),
+        decisao: parseDataBR(rev.decisao),
+      }));
+
+      const pedidosValidos = parsedRevs.map((r) => r.pedido).filter(Boolean);
+      const decisoesRevValidas = parsedRevs.map((r) => r.decisao).filter(Boolean);
+      const minPedidoRev = pedidosValidos.length
+        ? new Date(Math.min.apply(null, pedidosValidos.map((d) => d.getTime())))
+        : null;
+      const maxDecisaoRev = decisoesRevValidas.length
+        ? new Date(Math.max.apply(null, decisoesRevValidas.map((d) => d.getTime())))
+        : null;
 
       state.requerimentos.forEach((req, index) => {
         const parsed = parsedReqs[index];
-
         let derMsg = "";
         let decisaoMsg = "";
 
-        if (!req.der) {
-          derMsg = "Informe a DER.";
-        } else if (digitCount(req.der) < 8) {
-          derMsg = "Data incompleta.";
-        } else if (!parsed.der) {
-          derMsg = "Data inválida ou futura.";
-        }
+        if (!req.der) derMsg = "Informe a DER.";
+        else if (digitCount(req.der) < 8) derMsg = "Data incompleta.";
+        else if (!parsed.der) derMsg = "Data inválida ou futura.";
 
-        if (!req.decisao) {
-          decisaoMsg = "Informe a decisão final do requerimento.";
-        } else if (digitCount(req.decisao) < 8) {
-          decisaoMsg = "Data incompleta.";
-        } else if (!parsed.decisao) {
-          decisaoMsg = "Data inválida ou futura.";
-        }
+        if (!req.decisao) decisaoMsg = "Informe a decisão final do requerimento.";
+        else if (digitCount(req.decisao) < 8) decisaoMsg = "Data incompleta.";
+        else if (!parsed.decisao) decisaoMsg = "Data inválida ou futura.";
 
         if (!derMsg && !decisaoMsg && parsed.der && parsed.decisao && parsed.decisao < parsed.der) {
           decisaoMsg = "Não pode ser anterior à DER.";
         }
 
-        if (!decisaoMsg && dp && parsed.decisao && parsed.decisao > dp) {
+        if (!decisaoMsg && minPedidoRev && parsed.decisao && parsed.decisao > minPedidoRev) {
           decisaoMsg = "Não pode ser posterior ao pedido administrativo de revisão.";
         }
 
-        if (derMsg) {
-          valid = false;
-          const inp = document.querySelector('[data-req-index="' + index + '"][data-req-field="der"]');
-          if (inp) inp.classList.add("invalid");
-          const err = $("err-req-" + index + "-der");
-          if (err) err.textContent = derMsg;
-        }
-
-        if (decisaoMsg) {
-          valid = false;
-          const inp = document.querySelector('[data-req-index="' + index + '"][data-req-field="decisao"]');
-          if (inp) inp.classList.add("invalid");
-          const err = $("err-req-" + index + "-decisao");
-          if (err) err.textContent = decisaoMsg;
-        }
+        if (derMsg) { valid = false; markReqError(index, "der", derMsg); }
+        if (decisaoMsg) { valid = false; markReqError(index, "decisao", decisaoMsg); }
       });
 
-      // DER duplicada
       const seen = new Map();
       parsedReqs.forEach((req, index) => {
         if (!req.der) return;
         const key = req.der.getTime();
         if (seen.has(key)) {
           valid = false;
-          const firstIndex = seen.get(key);
-          [firstIndex, index].forEach((i) => {
-            const inp = document.querySelector('[data-req-index="' + i + '"][data-req-field="der"]');
-            if (inp) inp.classList.add("invalid");
-            const err = $("err-req-" + i + "-der");
-            if (err) err.textContent = "DER duplicada.";
-          });
+          markReqError(seen.get(key), "der", "DER duplicada.");
+          markReqError(index, "der", "DER duplicada.");
         } else {
           seen.set(key, index);
         }
       });
 
-      function checkField(id, parsed) {
-        const raw = state[id];
-        let message = "";
+      state.revisoes.forEach((rev, index) => {
+        const parsed = parsedRevs[index];
+        let pedidoMsg = "";
+        let decisaoMsg = "";
 
-        if (!raw) {
-          message = "Informe a data.";
-        } else if (digitCount(raw) < 8) {
-          message = "Data incompleta.";
-        } else if (!parsed) {
-          message = "Data inválida ou futura.";
+        if (!rev.pedido) pedidoMsg = "Informe o protocolo do pedido de revisão.";
+        else if (digitCount(rev.pedido) < 8) pedidoMsg = "Data incompleta.";
+        else if (!parsed.pedido) pedidoMsg = "Data inválida ou futura.";
+
+        if (!rev.decisao) decisaoMsg = "Informe a decisão final do pedido de revisão.";
+        else if (digitCount(rev.decisao) < 8) decisaoMsg = "Data incompleta.";
+        else if (!parsed.decisao) decisaoMsg = "Data inválida ou futura.";
+
+        if (!pedidoMsg && !decisaoMsg && parsed.pedido && parsed.decisao && parsed.decisao < parsed.pedido) {
+          decisaoMsg = "Não pode ser anterior ao protocolo do pedido de revisão.";
         }
 
-        if (message) {
-          valid = false;
-          $(id).classList.add("invalid");
-          $("err-" + id).textContent = message;
+        if (!pedidoMsg && index > 0 && parsed.pedido && parsedRevs[0].decisao && parsed.pedido < parsedRevs[0].decisao) {
+          pedidoMsg = "Deve ser posterior à decisão do primeiro pedido de revisão.";
         }
-      }
 
-      checkField("dataPedido", dp);
-      checkField("dataDecisao", dd);
-      checkField("dataAjuizamento", da);
+        if (pedidoMsg) { valid = false; markRevError(index, "pedido", pedidoMsg); }
+        if (decisaoMsg) { valid = false; markRevError(index, "decisao", decisaoMsg); }
+      });
 
-      if (dp && dd && dd < dp) {
-        valid = false;
-        $("dataDecisao").classList.add("invalid");
-        $("err-dataDecisao").textContent =
-          "Deve ser posterior ou igual ao pedido administrativo de revisão.";
-      }
+      let ajuizMsg = "";
+      if (!state.dataAjuizamento) ajuizMsg = "Informe a data.";
+      else if (digitCount(state.dataAjuizamento) < 8) ajuizMsg = "Data incompleta.";
+      else if (!da) ajuizMsg = "Data inválida ou futura.";
 
-      if (dd && da && da <= dd) {
+      if (ajuizMsg) {
         valid = false;
         $("dataAjuizamento").classList.add("invalid");
-        $("err-dataAjuizamento").textContent =
-          "Deve ser posterior à decisão administrativa final do pedido de revisão.";
+        $("err-dataAjuizamento").textContent = ajuizMsg;
+      } else if (maxDecisaoRev && da && da <= maxDecisaoRev) {
+        valid = false;
+        $("dataAjuizamento").classList.add("invalid");
+        $("err-dataAjuizamento").textContent = "Deve ser posterior à decisão administrativa final do pedido de revisão.";
       }
 
       return {
         valid,
         parsed: {
           requerimentos: parsedReqs,
-          dataPedido: dp,
-          dataDecisao: dd,
+          revisoes: parsedRevs,
           dataAjuizamento: da,
         },
       };
@@ -925,59 +903,51 @@
 
     function renderResultado() {
       const r = state.resultado;
-
       $("resultadoCard").classList.remove("hidden");
       $("minutaCard").classList.remove("hidden");
 
-      $("resultado").innerHTML =
-        '<div class="result-line"><span>Saldo consumido após a decisão administrativa final do pedido de revisão (DA − DD)</span><strong>' +
-        formatarIntervalo(r.saldoConsumido) +
-        '</strong></div>' +
-        '<div class="result-line"><span>Saldo remanescente do quinquênio</span><strong>' +
-        formatarIntervalo(r.saldoRemanescente) +
-        '</strong></div>' +
-        '<div class="result-line highlight"><span>Marco prescricional (com suspensão)</span><strong>' +
-        fmt(r.marcoPrescricional) +
-        '</strong></div>' +
-        '<div class="result-line"><span>Marco simples (DA − 5 anos), para conferência</span><strong>' +
-        fmt(r.marcoSimples) +
-        '</strong></div>' +
-        '<p class="hint">Diferença a favor do segurado: <strong>' +
-        r.diferencaFavorSegurado +
-        " " +
-        (r.diferencaFavorSegurado === 1 ? "dia" : "dias") +
-        "</strong>.</p>";
+      const marcosHtml = r.marcosNascimento.map((p) =>
+        '<div class="result-line"><span>' + p.label + '</span><strong>prescrição nasce na decisão final</strong></div>'
+      ).join("");
 
-      $("derStatuses").innerHTML = r.requerimentoStatuses
-        .map((s) => {
-          return (
-            '<div class="der-status">' +
-            '<div class="top">' +
-            "<strong>DER " + fmt(s.der) + "</strong>" +
-            '<span class="badge ' +
-            (s.haPrescricao ? "warning" : "success") +
-            '">' +
-            (s.haPrescricao ? "Prescrição parcial" : "Sem prescrição") +
-            "</span>" +
-            "</div>" +
-            "<p>Decisão final do requerimento: " + fmt(s.decisaoRequerimento) + ".</p>" +
-            '<p class="prescricao-texto">' +
-            (s.haPrescricao
-              ? "Prescritas as parcelas vencidas entre " +
-                fmt(s.der) +
-                " e " +
-                fmt(s.diaAnteriorMarco) +
-                "; preservadas a partir de " +
-                fmt(r.marcoPrescricional) +
-                "."
-              : "Sem prescrição; preservadas todas as parcelas desde " +
-                fmt(s.der) +
-                ".") +
-            "</p>" +
-            "</div>"
-          );
-        })
-        .join("");
+      const periodosComputadosHtml = r.periodosComputados.length
+        ? r.periodosComputados.map((p) =>
+            '<div class="result-line"><span>' + p.label + '</span><strong>' + formatarIntervalo(p.intervalo) + '</strong></div>'
+          ).join("")
+        : '<p class="hint">Nenhum pedido de revisão incidiu sobre o quinquênio final.</p>';
+
+      const revisoesInformadasHtml = r.periodosRevisaoInformados.map((p) =>
+        '<div class="result-line"><span>' + p.label + '</span><strong>' + formatarIntervalo(p.intervalo) + '</strong></div>'
+      ).join("");
+
+      $("resultado").innerHTML =
+        '<div class="result-line highlight"><span>Marco prescricional final</span><strong>' + fmt(r.marcoPrescricional) + '</strong></div>' +
+        '<div class="result-line"><span>Marco simples (ajuizamento − 5 anos), para conferência</span><strong>' + fmt(r.marcoSimples) + '</strong></div>' +
+        '<h3 style="margin-top:18px;">Nascimento da prescrição nos requerimentos originários</h3>' +
+        '<p class="hint">A DER identifica o requerimento; a prescrição do próprio requerimento nasce com a decisão administrativa final.</p>' +
+        marcosHtml +
+        '<h3 style="margin-top:18px;">Pedidos de revisão efetivamente computados como suspensão</h3>' +
+        periodosComputadosHtml +
+        '<div class="result-line"><span>Suspensão efetivamente acrescida ao quinquênio</span><strong>' + r.suspensaoTotalDias + ' ' + (r.suspensaoTotalDias === 1 ? "dia" : "dias") + '</strong></div>' +
+        '<p class="hint">Diferença a favor do segurado em relação ao marco simples: <strong>' + r.diferencaFavorSegurado + ' ' + (r.diferencaFavorSegurado === 1 ? "dia" : "dias") + '</strong>.</p>' +
+        '<h3 style="margin-top:18px;">Pedidos de revisão informados</h3>' +
+        '<p class="hint">Lista bruta dos pedidos de revisão lançados; quando houver sobreposição, o cálculo usa os intervalos mesclados acima.</p>' +
+        revisoesInformadasHtml;
+
+      $("derStatuses").innerHTML = r.requerimentoStatuses.map((s) => {
+        return '<div class="der-status">' +
+          '<div class="top">' +
+          '<strong>DER ' + fmt(s.der) + '</strong>' +
+          '<span class="badge ' + (s.haPrescricao ? "warning" : "success") + '">' + (s.haPrescricao ? "Prescrição parcial" : "Sem prescrição") + '</span>' +
+          '</div>' +
+          '<p>Decisão final do requerimento: ' + fmt(s.decisaoRequerimento) + ' — marco de nascimento da prescrição relativa ao requerimento originário.</p>' +
+          '<p class="prescricao-texto">' +
+          (s.haPrescricao
+            ? 'Prescritas as parcelas vencidas entre ' + fmt(s.der) + ' e ' + fmt(s.diaAnteriorMarco) + '; preservadas a partir de ' + fmt(r.marcoPrescricional) + '.'
+            : 'Sem prescrição; a decisão final do requerimento é igual ou posterior ao marco prescricional final, de modo que as parcelas desde a DER estão preservadas.') +
+          '</p>' +
+          '</div>';
+      }).join("");
 
       $("conclusaoBadge").innerHTML = haAlgumaPrescricao(r)
         ? '<span class="badge danger">Há prescrição em ao menos um requerimento</span>'
@@ -985,64 +955,70 @@
 
       $("minuta").value = gerarMinuta({
         requerimentos: state.parsedDates.requerimentos,
-        dataPedido: state.parsedDates.dataPedido,
-        dataDecisao: state.parsedDates.dataDecisao,
+        revisoes: state.parsedDates.revisoes,
         dataAjuizamento: state.parsedDates.dataAjuizamento,
         resultado: r,
       });
     }
 
     function gerarMinuta(input) {
-      const requerimentos = input.requerimentos
-        .slice()
-        .sort((a, b) => a.der.getTime() - b.der.getTime());
-
-      const dataPedido = input.dataPedido;
-      const dataDecisao = input.dataDecisao;
+      const requerimentos = input.requerimentos.slice().sort((a, b) => a.der.getTime() - b.der.getTime());
+      const revisoes = input.revisoes;
       const dataAjuizamento = input.dataAjuizamento;
       const resultado = input.resultado;
 
-      const linhasRequerimentos = requerimentos
-        .map((r, i) => {
-          return (
-            "Requerimento " +
-            (i + 1) +
-            ": DER em " +
-            fmt(r.der) +
-            "; decisão final do requerimento em " +
-            fmt(r.decisao) +
-            "."
-          );
-        })
-        .join("\n\n");
+      const linhasRequerimentos = requerimentos.map((r, i) => {
+        return "Requerimento " + (i + 1) + ": DER em " + fmt(r.der) +
+          "; decisão final do requerimento em " + fmt(r.decisao) +
+          ". A prescrição relativa às parcelas postuladas nesse requerimento passou a correr apenas após a decisão administrativa final.";
+      }).join("\n\n");
+
+      const linhasRevisoes = revisoes.map((r, i) => {
+        return "Pedido de revisão " + (i + 1) + ": protocolado em " + fmt(r.pedido) +
+          "; decisão administrativa final comunicada em " + fmt(r.decisao) +
+          ". Nesse período, o prazo prescricional já iniciado ficou suspenso.";
+      }).join("\n\n");
+
+      const linhasNascimento = resultado.marcosNascimento.map((p) =>
+        "• " + p.label + ": a prescrição nasce na decisão final do requerimento, em " + fmt(p.decisao) + "."
+      ).join("\n");
+
+      const linhasSuspensao = resultado.periodosComputados.length
+        ? resultado.periodosComputados.map((p) => "• " + p.label + ": " + formatarIntervalo(p.intervalo) + ".").join("\n")
+        : "• Nenhum pedido de revisão incidiu sobre o quinquênio final.";
 
       const conclusao = haAlgumaPrescricao(resultado)
         ? gerarConclusaoComPrescricao(resultado)
-        : "Como nenhuma das datas de entrada de requerimento informadas é anterior ao marco prescricional acima identificado, não há parcelas atingidas pela prescrição quinquenal.";
+        : "Como nenhuma decisão final de requerimento originário é anterior ao marco prescricional acima identificado, não há parcelas atingidas pela prescrição quinquenal.";
 
       return `Prejudicial de mérito: prescrição.
 
 As pretensões de natureza previdenciária deduzidas em face do INSS submetem-se ao prazo prescricional quinquenal previsto no art. 1º do Decreto nº 20.910/32, estendido às autarquias pelo art. 2º do Decreto-Lei nº 4.597/42 e reafirmado, no âmbito da legislação de regência, pelo parágrafo único do art. 103 da Lei nº 8.213/91. Cuidando-se de relação jurídica de trato sucessivo, e não havendo negativa do próprio fundo de direito, a prescrição alcança apenas as parcelas vencidas no quinquênio anterior à propositura da ação.
 
-O pedido administrativo de revisão do benefício, por sua vez, constitui causa suspensiva — e não interruptiva — da prescrição, nos termos do art. 4º do Decreto nº 20.910/32, segundo o qual não corre o prazo prescricional enquanto a Administração estiver examinando o requerimento do interessado. Trata-se de orientação consagrada na Súmula nº 74 da Turma Nacional de Uniformização dos Juizados Especiais Federais ("O prazo de prescrição fica suspenso pela formulação de requerimento administrativo e volta a correr pelo saldo remanescente após a ciência da decisão administrativa final") e reiteradamente afirmada pelo Superior Tribunal de Justiça e pelo Tribunal Regional Federal da 4ª Região.
+No requerimento administrativo originário, a pretensão resistida somente se consolida com a decisão final da Administração. Por isso, a prescrição relativa às parcelas postuladas naquele requerimento não nasce na DER: ela passa a correr apenas após a comunicação da decisão administrativa final. Não se trata, nesse ponto, de suspensão de prazo já iniciado, mas de definição do marco inicial da própria prescrição.
+
+Diversamente, quando é formulado pedido administrativo de revisão sobre matéria já decidida, há causa suspensiva — e não interruptiva — da prescrição, nos termos do art. 4º do Decreto nº 20.910/32, segundo o qual não corre o prazo prescricional enquanto a Administração estiver examinando o requerimento do interessado. Trata-se de orientação consagrada na Súmula nº 74 da Turma Nacional de Uniformização dos Juizados Especiais Federais (“O prazo de prescrição fica suspenso pela formulação de requerimento administrativo e volta a correr pelo saldo remanescente após a ciência da decisão administrativa final”). Assim, o cálculo distingue duas etapas: primeiro, identifica-se o nascimento da prescrição com a decisão final do requerimento originário; depois, descontam-se os períodos de suspensão decorrentes de pedidos de revisão.
 
 No caso, os marcos pertinentes para a análise da prescrição são os seguintes:
 
 ${linhasRequerimentos}
 
-Pedido administrativo de revisão (início da suspensão): ${fmt(dataPedido)}.
-
-Decisão administrativa final do pedido de revisão (retomada da contagem): ${fmt(dataDecisao)}.
+${linhasRevisoes}
 
 Ajuizamento da ação: ${fmt(dataAjuizamento)}.
 
-Aplicação da fórmula da Súmula nº 74 da TNU ao caso concreto:
+Aplicação da fórmula ao caso concreto:
 
-(i) Saldo do prazo prescricional consumido após a retomada da contagem, correspondente ao lapso decorrido entre a comunicação da decisão administrativa final do pedido de revisão (${fmt(dataDecisao)}) e o ajuizamento da ação (${fmt(dataAjuizamento)}): ${formatarIntervalo(resultado.saldoConsumido)}.
+(i) Marco prescricional simples, correspondente ao quinquênio imediatamente anterior ao ajuizamento, antes da consideração das suspensões administrativas posteriores: ${fmt(resultado.marcoSimples)}.
 
-(ii) Saldo remanescente do quinquênio, contado regressivamente a partir do pedido administrativo de revisão (${fmt(dataPedido)}): ${formatarIntervalo(resultado.saldoRemanescente)}.
+(ii) Marco de nascimento da prescrição em cada requerimento originário:
+${linhasNascimento}
 
-(iii) Marco prescricional, correspondente à data obtida pela retroprojeção do saldo remanescente a partir do pedido administrativo de revisão: ${fmt(resultado.marcoPrescricional)}. Parcelas com vencimento anterior a essa data estão prescritas; parcelas com vencimento posterior, não.
+(iii) Pedidos de revisão mesclados e efetivamente computados como suspensão de prazo já iniciado:
+${linhasSuspensao}
+Total efetivamente acrescido ao quinquênio em razão dos pedidos de revisão: ${resultado.suspensaoTotalDias} ${resultado.suspensaoTotalDias === 1 ? "dia" : "dias"}.
+
+(iv) Marco prescricional final, obtido pela aplicação conjunta dessas premissas — nascimento da prescrição com a decisão final do requerimento originário e suspensão durante os pedidos de revisão: ${fmt(resultado.marcoPrescricional)}.
 
 ${conclusao}`;
     }
@@ -1050,46 +1026,24 @@ ${conclusao}`;
     function gerarConclusaoComPrescricao(r) {
       const linhas = r.requerimentoStatuses.map((s) => {
         if (s.haPrescricao) {
-          return (
-            "Em relação à DER de " +
-            fmt(s.der) +
-            " (decisão final do requerimento em " +
-            fmt(s.decisaoRequerimento) +
-            "): estão prescritas as parcelas vencidas entre " +
-            fmt(s.der) +
-            " e " +
-            fmt(s.diaAnteriorMarco) +
-            ". As parcelas vencidas a partir de " +
-            fmt(r.marcoPrescricional) +
-            " estão preservadas."
-          );
+          return "Em relação à DER de " + fmt(s.der) +
+            " (decisão final do requerimento em " + fmt(s.decisaoRequerimento) +
+            "): como a decisão final é anterior ao marco prescricional final, estão prescritas as parcelas vencidas entre " +
+            fmt(s.der) + " e " + fmt(s.diaAnteriorMarco) +
+            ". As parcelas vencidas a partir de " + fmt(r.marcoPrescricional) + " estão preservadas.";
         }
 
-        return (
-          "Em relação à DER de " +
-          fmt(s.der) +
-          " (decisão final do requerimento em " +
-          fmt(s.decisaoRequerimento) +
-          "): não há parcelas prescritas. Todas as parcelas vencidas desde " +
-          fmt(s.der) +
-          " estão preservadas."
-        );
+        return "Em relação à DER de " + fmt(s.der) +
+          " (decisão final do requerimento em " + fmt(s.decisaoRequerimento) +
+          "): não há parcelas prescritas, pois a prescrição somente nasceu com a decisão final do requerimento, que não é anterior ao marco prescricional final.";
       });
 
-      return `Considerando o marco prescricional acima identificado, e as datas de entrada de requerimento informadas, tem-se o seguinte:
+      return `Considerando o marco prescricional acima identificado, tem-se o seguinte:
 
 ${linhas.map((l) => "• " + l).join("\n\n")}
 
-Em síntese, estão prescritas as parcelas vencidas em data anterior a ${fmt(r.marcoPrescricional)}, devendo as parcelas posteriores a essa data ser preservadas.`;
+Em síntese, somente estão prescritas parcelas vinculadas a requerimentos cuja decisão final administrativa seja anterior ao marco prescricional final; parcelas vencidas a partir desse marco ficam preservadas.`;
     }
-
-    $("dataPedido").addEventListener("input", function () {
-      setFieldValue("dataPedido", this.value);
-    });
-
-    $("dataDecisao").addEventListener("input", function () {
-      setFieldValue("dataDecisao", this.value);
-    });
 
     $("dataAjuizamento").addEventListener("input", function () {
       setFieldValue("dataAjuizamento", this.value);
@@ -1102,51 +1056,44 @@ Em síntese, estão prescritas as parcelas vencidas em data anterior a ${fmt(r.m
       renderRequerimentos();
     });
 
+    $("addRevisao").addEventListener("click", function () {
+      if (state.revisoes.length >= 2) return;
+      state.revisoes.push({ pedido: "", decisao: "" });
+      clearResult();
+      renderRevisoes();
+    });
+
     $("limpar").addEventListener("click", function () {
       state.requerimentos = [{ der: "", decisao: "" }];
-      state.dataPedido = "";
-      state.dataDecisao = "";
+      state.revisoes = [{ pedido: "", decisao: "" }];
       state.dataAjuizamento = "";
-
-      $("dataPedido").value = "";
-      $("dataDecisao").value = "";
       $("dataAjuizamento").value = "";
-
       clearErrors();
       clearResult();
       renderRequerimentos();
+      renderRevisoes();
     });
 
     $("calcular").addEventListener("click", function () {
       const validation = validarFormulario();
-
       if (!validation.valid) return;
-
       const parsed = validation.parsed;
-
       const resultado = calcularPrescricao({
         requerimentos: parsed.requerimentos,
-        dataPedido: parsed.dataPedido,
-        dataDecisao: parsed.dataDecisao,
+        revisoes: parsed.revisoes,
         dataAjuizamento: parsed.dataAjuizamento,
       });
-
       state.resultado = resultado;
       state.parsedDates = parsed;
-
       renderResultado();
     });
 
     $("copiar").addEventListener("click", async function () {
       const text = $("minuta").value;
-
       try {
         await navigator.clipboard.writeText(text);
         $("copiar").textContent = "Copiado";
-
-        setTimeout(function () {
-          $("copiar").textContent = "Copiar minuta";
-        }, 1200);
+        setTimeout(function () { $("copiar").textContent = "Copiar minuta"; }, 1200);
       } catch {
         $("minuta").focus();
         $("minuta").select();
@@ -1155,6 +1102,7 @@ Em síntese, estão prescritas as parcelas vencidas em data anterior a ${fmt(r.m
     });
 
     renderRequerimentos();
+    renderRevisoes();
   </script>
 </body>
 </html>
